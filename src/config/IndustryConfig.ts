@@ -21,6 +21,14 @@ export interface ScoredOption<V extends number = number> {
   description?: string;
 }
 
+/** An optional free-text question: its label and input placeholder. */
+export interface FreeTextQuestion {
+  /** The `bottleneck` slot maps to the first, `desiredFix` to the second. */
+  key: 'bottleneck' | 'desiredFix';
+  label: string;
+  placeholder: string;
+}
+
 /** One zone's full content and question set. */
 export interface ZoneConfig {
   /** Stable id used by the scoring engine and webhook payload. */
@@ -31,22 +39,34 @@ export interface ZoneConfig {
   description: string;
   /** The "Think:" example line. */
   thinkExample: string;
-  /** Placeholders for the two optional free-text questions, in order. */
-  freeTextPlaceholders: [bottleneck: string, desiredFix: string];
+  /** The two optional free-text questions (labels + placeholders), in order. */
+  freeText: [FreeTextQuestion, FreeTextQuestion];
 }
+
+/** A 1..5 segmented scale with an optional cap word under each stop. */
+export type ScaleCaps = [string, string, string, string, string];
 
 /** Labels for the five scored dimensions and their option scales. */
 export interface DimensionConfig {
-  /** Repetitiveness scale endpoints, e.g. ["Bespoke", "Process-driven"] (1..5). */
-  repetitivenessScale: [low: string, high: string];
-  /** AI usage options (None/Basic/Moderate/Advanced) with industry descriptions. */
+  /** Label for the hours question, e.g. "Time consumed". */
+  hoursLabel: string;
+  hoursHint: string;
+  /** Repetitiveness label, hint, and cap words under stops 1..5. */
+  repetitivenessLabel: string;
+  repetitivenessHint: string;
+  repetitivenessCaps: ScaleCaps;
+  /** AI usage label + options (None/Basic/Moderate/Advanced) with descriptions. */
+  aiUsageLabel: string;
+  aiUsageHint: string;
   aiUsageOptions: ScoredOption<AiUsageLevel>[];
-  /** Margin impact options (Low/Medium/High/Critical). */
+  /** Margin impact label + options (Low/Medium/High/Critical). */
+  marginImpactLabel: string;
+  marginImpactHint: string;
   marginImpactOptions: ScoredOption<MarginImpactLevel>[];
-  /** Partner-involvement scale endpoints, e.g. ["Never", "I'm the bottleneck"] (1..5). */
-  partnerInvolvementScale: [low: string, high: string];
-  /** Label for the partner-involvement dimension, e.g. "Partner involvement". */
+  /** Partner-involvement label, hint, and cap words (industry term). */
   partnerInvolvementLabel: string;
+  partnerInvolvementHint: string;
+  partnerInvolvementCaps: ScaleCaps;
 }
 
 /** Next-step guidance keyed to the constraint zone's current AI level. */

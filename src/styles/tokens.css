@@ -1,0 +1,118 @@
+/*
+ * ============================================================================
+ *  DESIGN TOKENS — Story Advantage brand system
+ * ============================================================================
+ *  Values extracted from the Story Advantage Brand Manual (brand colours +
+ *  brand fonts pages). These are the source of truth; the app and report email
+ *  reference only these tokens, never raw hex. The scoring engine and screens
+ *  are brand-agnostic — reskinning a vertical means editing this file alone.
+ *
+ *  Palette (from the manual):
+ *    Navy  #222056   Yellow #e3e425   Black #000000
+ *    Mid Gray #58595B   Light Gray #939598
+ *
+ *  Usage intent (clean, uncluttered, one accent + one highlight):
+ *    - Navy   → primary CTAs, selected states, links, default chart bars, text.
+ *    - Yellow → the SINGLE highlight for binding-constraint elements only.
+ *               Always navy text on yellow (AA); never yellow text on white.
+ * ============================================================================
+ */
+
+:root {
+  /* --- Brand primaries --- */
+  --sa-navy: #222056;
+  --sa-navy-hover: #2e2c70;
+  --sa-navy-deep: #1a1844;
+  --sa-yellow: #e3e425;
+  --sa-yellow-soft: #fbfbcf; /* pale tint for constraint row/verdict fills */
+  --sa-yellow-line: #cfd018; /* slightly darker yellow for borders on white */
+
+  /* --- Neutrals (brand grays) --- */
+  --sa-black: #000000;
+  --sa-mid-gray: #58595b;
+  --sa-light-gray: #939598;
+
+  /* --- Semantic text/surface --- */
+  --sa-ink: #222056;         /* headings + body: navy, ~14:1 on white */
+  --sa-ink-soft: #58595b;    /* secondary text / hints: mid gray, ~7:1 */
+  --sa-ink-faint: #939598;   /* captions / placeholders: light gray */
+  --sa-line: #e5e5ea;        /* borders, dividers (light-gray derived) */
+  --sa-surface: #ffffff;     /* cards */
+  --sa-bg: #f7f8fb;          /* page background */
+  --sa-bg-subtle: #eef0f5;   /* subtle fills, empty chart tracks */
+
+  /* --- Accent = navy (primary CTAs, selected, links) --- */
+  --sa-accent: var(--sa-navy);
+  --sa-accent-hover: var(--sa-navy-hover);
+  --sa-accent-contrast: #ffffff;
+  --sa-accent-soft: #ecedf6; /* selected-option background (navy tint) */
+
+  /* --- Highlight = yellow (binding-constraint elements only) --- */
+  --sa-alert: var(--sa-yellow);
+  --sa-alert-line: var(--sa-yellow-line);
+  --sa-alert-soft: var(--sa-yellow-soft);
+  --sa-alert-ink: var(--sa-navy); /* navy text sits on yellow */
+
+  /* --- Focus ring --- */
+  --sa-focus: #4b6bff;          /* on light surfaces */
+  --sa-focus-on-navy: var(--sa-yellow); /* visible on navy buttons */
+
+  /* --- Functional state colour (NOT a brand colour) ---
+     The SA palette has no error hue, but accessible form validation needs a
+     distinct, high-contrast signal. This dark red is a functional UI state
+     token used ONLY for validation errors (border + aria-live text), kept
+     separate from the brand palette so brand elements stay navy/yellow. */
+  --sa-error: #c0362c;       /* ~5.9:1 on white — AA for text */
+  --sa-error-soft: #fbeceb;
+
+  /* --- Typography (brand fonts, with open/system fallbacks) --- */
+  --sa-font-sans: "Myriad Pro", "Source Sans 3", "Source Sans Pro", system-ui,
+    -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --sa-font-heading: var(--sa-font-sans);
+
+  --sa-text-xs: 0.8125rem;
+  --sa-text-sm: 0.9375rem;
+  --sa-text-base: 1rem;
+  --sa-text-lg: 1.1875rem;
+  --sa-text-xl: 1.5rem;
+  --sa-text-2xl: 2rem;
+  --sa-text-3xl: 2.5rem;
+
+  --sa-weight-regular: 400;
+  --sa-weight-medium: 500;
+  --sa-weight-semibold: 600;
+  --sa-weight-bold: 700;
+  --sa-weight-black: 800;
+
+  --sa-leading-tight: 1.08;
+  --sa-leading-snug: 1.3;
+  --sa-leading-normal: 1.55;
+
+  /* --- Letter-spacing for small uppercase labels (restyles the prototype's
+         "ledger mono" eyebrows into brand type) --- */
+  --sa-track-label: 0.12em;
+
+  /* --- Spacing scale --- */
+  --sa-space-1: 0.25rem;
+  --sa-space-2: 0.5rem;
+  --sa-space-3: 0.75rem;
+  --sa-space-4: 1rem;
+  --sa-space-5: 1.5rem;
+  --sa-space-6: 2rem;
+  --sa-space-7: 3rem;
+  --sa-space-8: 4rem;
+
+  /* --- Radii --- */
+  --sa-radius-sm: 6px;
+  --sa-radius-md: 10px;
+  --sa-radius-lg: 16px;
+  --sa-radius-pill: 999px;
+
+  /* --- Elevation (minimal; no shadow soup) --- */
+  --sa-shadow-card: 0 1px 2px rgba(34, 32, 86, 0.06),
+    0 2px 8px rgba(34, 32, 86, 0.05);
+
+  /* --- Layout --- */
+  --sa-maxw: 720px;
+  --sa-maxw-wide: 960px;
+}

@@ -1,0 +1,240 @@
+@import './tokens.css';
+
+* { box-sizing: border-box; }
+
+html, body, #root { height: 100%; }
+
+body {
+  margin: 0;
+  font-family: var(--sa-font-sans);
+  font-size: var(--sa-text-base);
+  line-height: var(--sa-leading-normal);
+  color: var(--sa-ink);
+  background: var(--sa-bg);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+h1, h2, h3 {
+  font-family: var(--sa-font-heading);
+  line-height: var(--sa-leading-tight);
+  margin: 0 0 var(--sa-space-3);
+  color: var(--sa-ink);
+}
+
+p { margin: 0 0 var(--sa-space-4); }
+
+a { color: var(--sa-accent); }
+
+/* --- App frame --- */
+.app-shell {
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.masthead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sa-space-4);
+  padding: var(--sa-space-4) var(--sa-space-5);
+  background: var(--sa-surface);
+  border-bottom: 1px solid var(--sa-line);
+}
+
+.masthead__logo {
+  display: flex;
+  align-items: center;
+  gap: var(--sa-space-3);
+  font-weight: var(--sa-weight-bold);
+  letter-spacing: 0.01em;
+}
+
+.masthead__logo-mark {
+  width: 30px;
+  height: 30px;
+  border-radius: var(--sa-radius-sm);
+  background: var(--sa-accent);
+  color: var(--sa-accent-contrast);
+  display: grid;
+  place-items: center;
+  font-size: var(--sa-text-sm);
+  font-weight: var(--sa-weight-bold);
+}
+
+.masthead__step {
+  font-size: var(--sa-text-sm);
+  font-weight: var(--sa-weight-semibold);
+  color: var(--sa-ink-soft);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.main {
+  flex: 1;
+  width: 100%;
+  max-width: var(--sa-maxw);
+  margin: 0 auto;
+  padding: var(--sa-space-6) var(--sa-space-5) var(--sa-space-8);
+}
+
+.footer {
+  text-align: center;
+  padding: var(--sa-space-5);
+  color: var(--sa-ink-faint);
+  font-size: var(--sa-text-sm);
+  border-top: 1px solid var(--sa-line);
+}
+.footer a { color: var(--sa-ink-soft); }
+
+/* --- Progress rail (7 zone ticks) --- */
+.rail {
+  display: flex;
+  gap: var(--sa-space-2);
+  margin-bottom: var(--sa-space-6);
+}
+.rail__tick {
+  flex: 1;
+  height: 6px;
+  border-radius: var(--sa-radius-pill);
+  background: var(--sa-bg-subtle);
+}
+.rail__tick--done { background: var(--sa-accent); }
+.rail__tick--current { background: var(--sa-accent); opacity: 0.55; }
+
+/* --- Card --- */
+.card {
+  background: var(--sa-surface);
+  border: 1px solid var(--sa-line);
+  border-radius: var(--sa-radius-lg);
+  box-shadow: var(--sa-shadow-card);
+  padding: var(--sa-space-6);
+}
+
+/* --- Typography helpers --- */
+.eyebrow {
+  font-size: var(--sa-text-sm);
+  font-weight: var(--sa-weight-semibold);
+  color: var(--sa-accent);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  margin-bottom: var(--sa-space-3);
+}
+.headline { font-size: var(--sa-text-3xl); font-weight: var(--sa-weight-bold); }
+.headline em { color: var(--sa-accent); font-style: normal; }
+.lede { font-size: var(--sa-text-lg); color: var(--sa-ink-soft); }
+.hint { font-size: var(--sa-text-sm); color: var(--sa-ink-faint); }
+
+/* --- Forms --- */
+.field { margin-bottom: var(--sa-space-5); }
+.field__label {
+  display: block;
+  font-weight: var(--sa-weight-semibold);
+  font-size: var(--sa-text-sm);
+  margin-bottom: var(--sa-space-2);
+}
+.field__req { color: var(--sa-navy); margin-left: 2px; }
+
+.input, .select {
+  width: 100%;
+  font: inherit;
+  color: var(--sa-ink);
+  background: var(--sa-surface);
+  border: 1px solid var(--sa-line);
+  border-radius: var(--sa-radius-md);
+  padding: var(--sa-space-3) var(--sa-space-4);
+  transition: border-color 0.12s ease, box-shadow 0.12s ease;
+}
+.input:focus, .select:focus, .btn:focus-visible, .seg__opt:focus-visible {
+  outline: none;
+  border-color: var(--sa-focus);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--sa-focus) 30%, transparent);
+}
+.input--invalid { border-color: var(--sa-error); border-width: 1.5px; }
+.input--invalid:focus {
+  border-color: var(--sa-error);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--sa-error) 30%, transparent);
+}
+
+.field__error {
+  color: var(--sa-error);
+  font-weight: var(--sa-weight-medium);
+  font-size: var(--sa-text-sm);
+  margin-top: var(--sa-space-2);
+  min-height: 1em;
+}
+.field__error:empty { margin-top: 0; min-height: 0; }
+
+.grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--sa-space-4);
+}
+@media (max-width: 520px) {
+  .grid-2 { grid-template-columns: 1fr; }
+}
+
+/* --- Phone input (country code + number) --- */
+.phone {
+  display: grid;
+  grid-template-columns: minmax(96px, auto) 1fr;
+  gap: var(--sa-space-3);
+}
+
+/* --- Buttons --- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sa-space-2);
+  font: inherit;
+  font-weight: var(--sa-weight-semibold);
+  border: 1px solid transparent;
+  border-radius: var(--sa-radius-md);
+  padding: var(--sa-space-4) var(--sa-space-6);
+  cursor: pointer;
+  transition: background 0.12s ease, border-color 0.12s ease;
+}
+.btn--primary {
+  background: var(--sa-accent);
+  color: var(--sa-accent-contrast);
+  width: 100%;
+  font-size: var(--sa-text-lg);
+}
+.btn--primary:hover { background: var(--sa-accent-hover); }
+.btn--primary:focus-visible {
+  border-color: var(--sa-focus-on-navy);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--sa-focus-on-navy) 55%, transparent);
+}
+.btn--ghost {
+  background: transparent;
+  color: var(--sa-ink-soft);
+  border-color: var(--sa-line);
+}
+.btn--ghost:hover { border-color: var(--sa-ink-faint); }
+
+.consent {
+  font-size: var(--sa-text-sm);
+  color: var(--sa-ink-faint);
+  margin-top: var(--sa-space-4);
+  text-align: center;
+}
+
+/* Honeypot — visually and programmatically hidden from real users. */
+.hp {
+  position: absolute !important;
+  left: -9999px !important;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .shake { animation: sa-shake 0.32s ease; }
+}
+@keyframes sa-shake {
+  0%, 100% { transform: translateX(0); }
+  20%, 60% { transform: translateX(-5px); }
+  40%, 80% { transform: translateX(5px); }
+}
