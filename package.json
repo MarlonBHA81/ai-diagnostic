@@ -1,0 +1,28 @@
+{
+  "name": "seven-zone-diagnostic",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "description": "The 7-Zone Business Diagnostic — Accounting Firm Edition. A Story Advantage lead-generating diagnostic quiz.",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "preview": "vite preview",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "typecheck": "tsc -b --noEmit"
+  },
+  "dependencies": {
+    "libphonenumber-js": "^1.11.4",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "@types/react": "^18.3.3",
+    "@types/react-dom": "^18.3.0",
+    "@vitejs/plugin-react": "^4.3.1",
+    "typescript": "^5.5.3",
+    "vite": "^5.4.0",
+    "vitest": "^2.0.5"
+  }
+}
