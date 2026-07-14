@@ -18,9 +18,10 @@ Welcome + Details (the gate) → Firm Baseline → Zone 1 … Zone 7 → Results
 
 - **Frontend:** Vite + React + TypeScript, hand-rolled CSS on a design-token file
   (`src/styles/tokens.css`). Mobile-first, solid down to 360px.
-- **Backend:** one serverless route, `POST /api/lead`, as a **Cloudflare Pages
-  Function** (`functions/api/lead.ts`). The browser never sees the webhook URL or
-  email key.
+- **Backend:** one serverless route, `POST /api/lead`. The logic lives in a
+  framework-agnostic handler (`src/server/handleLead.ts`); `api/lead.ts` is the
+  **Vercel** adapter (primary) and `functions/api/lead.ts` the Cloudflare Pages
+  adapter (alternate). The browser never sees the webhook URL or email key.
 - **No database, no cookies, no localStorage for answers.** The n8n webhook owns
   persistence. Quiz state is in-memory only.
 - **Email:** report to the prospect via **Resend** (skipped silently if unset).
@@ -38,15 +39,19 @@ npm run typecheck
 The accounting vertical is served at `/accounting` conceptually; the app mounts
 the accounting config by default (`src/main.tsx`). Route: **`/accounting`**.
 
-## Deploy (Cloudflare Pages)
+## Deploy (Vercel — primary)
 
-```bash
-npm run build
-npx wrangler pages deploy dist
-```
+Easiest path, no CLI needed:
 
-Set environment variables in **Pages → Settings → Variables & Secrets** (or
-`wrangler pages secret put <NAME>`), for both Production and Preview:
+1. Push this repo to GitHub (done).
+2. In Vercel → **Add New… → Project → Import** this repo. Vercel auto-detects
+   Vite (build `npm run build`, output `dist`); `api/lead.ts` is picked up as the
+   serverless route automatically.
+3. In **Settings → Environment Variables**, add the variables below (Production +
+   Preview), then **Deploy**. Every future `git push` redeploys.
+
+Or via CLI: `npm i -g vercel && vercel` (first run links the project) then
+`vercel --prod`.
 
 | Variable | Required | Purpose |
 |---|---|---|
@@ -56,8 +61,14 @@ Set environment variables in **Pages → Settings → Variables & Secrets** (or
 | `NOTIFY_EMAIL` | no | Internal "new lead" alert address. |
 | `ALLOWED_ORIGIN` | no | CORS lock for `/api/lead` (the app's exact origin). |
 
-For local function testing: copy `.env.example` → `.dev.vars`, then
-`npx wrangler pages dev dist`.
+Embedding headers (`frame-ancestors`) are set in `vercel.json` — add your
+WordPress domain there.
+
+### Alternate: Cloudflare Pages
+
+The same handler runs on Cloudflare via `functions/api/lead.ts`:
+`npm run build && npx wrangler pages deploy dist`, with the same env vars set in
+Pages → Settings → Variables. Headers come from `public/_headers`.
 
 ## Webhook events (n8n setup)
 
@@ -186,6 +197,7 @@ industry-agnostic — add a vertical by writing one config file.
       (`src/config/industries/accounting.ts`, `src/config/app.ts`).
 - [ ] Real **logo** dropped into `src/components/Logo.tsx` (currently an inline
       SVG placeholder in brand colours).
-- [ ] WordPress domain added to `public/_headers` `frame-ancestors`.
+- [ ] WordPress domain added to `frame-ancestors` (`vercel.json`, or
+      `public/_headers` on Cloudflare).
 - [ ] Verified the embed on the target WordPress/Divi page.
 ```
