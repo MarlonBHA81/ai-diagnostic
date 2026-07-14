@@ -243,7 +243,7 @@ export function whyRuns(
   }
   if (model.wonPartner) {
     bits.push([
-      { t: `a partner is the bottleneck here (${partnerLabel} ` },
+      { t: `you're personally the bottleneck here (${partnerLabel} ` },
       { t: `${c.partnerInvolvement}/5`, b: true },
       { t: ')' },
     ]);

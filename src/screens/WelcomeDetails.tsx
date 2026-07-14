@@ -119,7 +119,7 @@ export function WelcomeDetails() {
 
   return (
     <form className="card" onSubmit={handleSubmit} noValidate>
-      <p className="eyebrow">The 7-Zone Business Diagnostic · Accounting Firm Edition</p>
+      <p className="eyebrow">The 7-Zone Diagnostic · {config.displayName} Edition</p>
       <h1 className="headline">{renderAccented(config.welcome.headline)}</h1>
       <p className="lede">{config.welcome.subhead}</p>
 
@@ -165,7 +165,7 @@ export function WelcomeDetails() {
         error={errors.email}
         errId={errId('email')}
         autoComplete="email"
-        placeholder="you@firm.com"
+        placeholder="you@company.com"
       />
 
       {/* Mobile: country selector + national number */}

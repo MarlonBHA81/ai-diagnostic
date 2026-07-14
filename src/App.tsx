@@ -26,7 +26,7 @@ export function App() {
     step === 'welcome'
       ? ''
       : step === 'baseline'
-        ? 'FIRM BASELINE'
+        ? 'BASELINE'
         : step === 'results'
           ? 'RESULTS'
           : `ZONE ${(step as number) + 1} / ${zoneCount}`;

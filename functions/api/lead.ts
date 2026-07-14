@@ -15,7 +15,7 @@
  */
 import { isValidEmail } from '../../src/lib/validation';
 import { renderReport } from '../../src/email/renderReport';
-import { accountingConfig } from '../../src/config/industries/accounting';
+import { activeConfig } from '../../src/config/active';
 import type {
   LeadCapturedEvent,
   DiagnosticCompletedEvent,
@@ -139,7 +139,7 @@ async function forwardWebhook(url: string | undefined, payload: unknown): Promis
 async function sendReportEmail(env: Env, event: DiagnosticCompletedEvent): Promise<void> {
   if (!env.EMAIL_API_KEY || !env.EMAIL_FROM) return; // skip silently if unconfigured
 
-  const report = renderReport(event, accountingConfig);
+  const report = renderReport(event, activeConfig);
 
   await resendSend(env.EMAIL_API_KEY, {
     from: env.EMAIL_FROM,

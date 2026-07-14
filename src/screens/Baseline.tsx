@@ -16,9 +16,9 @@ export function Baseline() {
 
   return (
     <div className="card">
-      <p className="eyebrow">Firm baseline</p>
+      <p className="eyebrow">Baseline</p>
       <h1 className="headline" style={{ fontSize: 'var(--sa-text-2xl)' }}>
-        A few numbers about your firm
+        A few quick numbers
       </h1>
       <p className="lede">
         These calibrate your results and let us price your constraint. Rough
@@ -114,9 +114,11 @@ export function Baseline() {
         </p>
       </div>
 
-      <p className="think" style={{ marginBottom: 0 }}>
-        {config.baseline.busySeasonNote}
-      </p>
+      {config.baseline.busySeasonNote && (
+        <p className="think" style={{ marginBottom: 0 }}>
+          {config.baseline.busySeasonNote}
+        </p>
+      )}
 
       <div className="nav">
         <button className="btn btn--ghost" type="button" onClick={() => go('welcome')}>

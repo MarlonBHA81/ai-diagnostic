@@ -126,10 +126,14 @@ export function renderReport(
       )}</div>
       <p style="font-size:15px;line-height:1.6;margin:0 0 12px">${escapeHtml(model.nextStep.body)}</p>
       ${secondHtml}
-      <p style="font-size:14px;color:${INK_SOFT};margin:0 0 16px">${escapeHtml(model.nextStep.firmExample)}</p>
-      <a href="${escapeHtml(config.closing.ctaUrl)}" style="display:inline-block;background:${NAVY};color:#fff;text-decoration:none;font-weight:600;padding:12px 22px;border-radius:10px">${escapeHtml(
-        config.closing.ctaText,
-      )} →</a>
+      ${model.nextStep.firmExample ? `<p style="font-size:14px;color:${INK_SOFT};margin:0 0 16px">${escapeHtml(model.nextStep.firmExample)}</p>` : ''}
+      ${
+        config.closing.ctaUrl
+          ? `<a href="${escapeHtml(config.closing.ctaUrl)}" style="display:inline-block;background:${NAVY};color:#fff;text-decoration:none;font-weight:600;padding:12px 22px;border-radius:10px">${escapeHtml(
+              config.closing.ctaText,
+            )} →</a>`
+          : ''
+      }
     </div>
 
     ${notesHtml}
@@ -165,7 +169,7 @@ export function renderReport(
       : '',
     model.nextStep.firmExample,
     '',
-    `${config.closing.ctaText}: ${config.closing.ctaUrl}`,
+    config.closing.ctaUrl ? `${config.closing.ctaText}: ${config.closing.ctaUrl}` : '',
     '',
     `"${config.closing.quote}" — ${config.closing.quoteAttribution}`,
     config.closing.reRunNote,

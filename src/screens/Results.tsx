@@ -128,7 +128,7 @@ export function Results() {
               <th>Repet.</th>
               <th>AI usage</th>
               <th>Margin</th>
-              <th>Partner</th>
+              <th>{config.dimensions.partnerInvolvementLabel.split(' ')[0]}</th>
               <th>Score</th>
             </tr>
           </thead>
@@ -169,7 +169,7 @@ export function Results() {
         <SynItem
           k={`Test 3 — Highest ${config.dimensions.partnerInvolvementLabel.toLowerCase()}`}
           zone={model.testWinners.partner.name}
-          r={`${config.dimensions.partnerInvolvementLabel} ${model.testWinners.partner.partnerInvolvement}/5. Solving this frees the scarcest resource in the firm: partner attention.`}
+          r={`${config.dimensions.partnerInvolvementLabel} ${model.testWinners.partner.partnerInvolvement}/5. Solving this frees your scarcest resource: leadership attention.`}
         />
       </div>
 
@@ -184,10 +184,14 @@ export function Results() {
             {model.nextStep.secondZoneScore}).
           </p>
         )}
-        <p className="firm-eg">{model.nextStep.firmExample}</p>
-        <a className="cta-btn" href={config.closing.ctaUrl} target="_blank" rel="noreferrer">
-          {config.closing.ctaText} →
-        </a>
+        {model.nextStep.firmExample && (
+          <p className="firm-eg">{model.nextStep.firmExample}</p>
+        )}
+        {config.closing.ctaUrl && (
+          <a className="cta-btn" href={config.closing.ctaUrl} target="_blank" rel="noreferrer">
+            {config.closing.ctaText} →
+          </a>
+        )}
       </div>
 
       {/* Free-text echo */}
