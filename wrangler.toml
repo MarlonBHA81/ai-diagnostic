@@ -1,0 +1,10 @@
+# Cloudflare Pages project config.
+# Deploy:  npm run build && npx wrangler pages deploy dist
+# Local:   npx wrangler pages dev dist  (reads .dev.vars for env)
+name = "seven-zone-diagnostic"
+pages_build_output_dir = "dist"
+compatibility_date = "2024-11-01"
+
+# Secrets/vars are set in the Cloudflare dashboard (Pages → Settings → Variables)
+# or via `wrangler pages secret put <NAME>`. See .env.example for the full list:
+#   LEAD_WEBHOOK_URL, EMAIL_API_KEY, EMAIL_FROM, NOTIFY_EMAIL, ALLOWED_ORIGIN

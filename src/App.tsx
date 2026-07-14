@@ -1,15 +1,27 @@
+import { useEffect } from 'react';
 import { useQuiz } from './state/QuizContext';
 import { Masthead } from './components/Masthead';
 import { ProgressRail } from './components/ProgressRail';
 import { WelcomeDetails } from './screens/WelcomeDetails';
+import { Baseline } from './screens/Baseline';
+import { ZoneScreen } from './screens/ZoneScreen';
+import { Results } from './screens/Results';
+import { useEmbedHeight } from './lib/embed';
 import { appConfig } from './config/app';
 
 export function App() {
   const { config, state } = useQuiz();
   const step = state.step;
   const zoneCount = config.zones.length;
-
   const inZone = typeof step === 'number';
+
+  useEmbedHeight();
+
+  // Scroll to top on step change (and notify embedder via height hook).
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, [step]);
+
   const stepLabel =
     step === 'welcome'
       ? ''
@@ -29,9 +41,9 @@ export function App() {
           allDone={step === 'results'}
         />
         {step === 'welcome' && <WelcomeDetails />}
-        {step === 'baseline' && <Stub title="Firm Baseline" />}
-        {inZone && <Stub title={config.zones[step as number].name} />}
-        {step === 'results' && <Stub title="Results" />}
+        {step === 'baseline' && <Baseline />}
+        {inZone && <ZoneScreen index={step as number} />}
+        {step === 'results' && <Results />}
       </main>
       <footer className="footer">
         {appConfig.footerLine} ·{' '}
@@ -39,17 +51,6 @@ export function App() {
           Privacy
         </a>
       </footer>
-    </div>
-  );
-}
-
-/** Temporary placeholder for screens not yet built (baseline, zones, results). */
-function Stub({ title }: { title: string }) {
-  return (
-    <div className="card">
-      <p className="eyebrow">Coming next</p>
-      <h2>{title}</h2>
-      <p className="lede">This screen is under construction.</p>
     </div>
   );
 }
