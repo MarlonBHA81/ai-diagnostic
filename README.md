@@ -60,9 +60,56 @@ Or via CLI: `npm i -g vercel && vercel` (first run links the project) then
 | `EMAIL_FROM` | no | e.g. `diagnostics@storyadvantage.co`. Required to send email. |
 | `NOTIFY_EMAIL` | no | Internal "new lead" alert address. |
 | `ALLOWED_ORIGIN` | no | CORS lock for `/api/lead` (the app's exact origin). |
+| `SUPABASE_URL` | no | Supabase project URL — stores results + enables the shareable link. |
+| `SUPABASE_SERVICE_ROLE_KEY` | no | Supabase service-role key (server-only). |
+| `APP_URL` | no | Base URL for the results link in the email (defaults to request origin). |
 
 Embedding headers (`frame-ancestors`) are set in `vercel.json` — add your
 WordPress domain there.
+
+## Storing results in Supabase (+ the emailed results link)
+
+When `SUPABASE_URL` + `SUPABASE_SERVICE_ROLE_KEY` are set, each completed
+diagnostic is inserted into a `diagnostics` table by the `/api/lead` function,
+and a shareable link — `${APP_URL}/r/<id>` — is added to the report email and to
+the payload forwarded to n8n. The link opens a read-only results page
+(`/r/:id`) that re-renders the diagnostic from Supabase.
+
+Create the table once in the Supabase SQL editor:
+
+```sql
+create table if not exists public.diagnostics (
+  id                 uuid primary key default gen_random_uuid(),
+  created_at         timestamptz not null default now(),
+  email              text,
+  business_name      text,
+  binding_constraint text,
+  constraint_votes   int,
+  currency           text,
+  payload            jsonb not null           -- the full diagnostic_completed event
+);
+
+-- Only the server (service-role key) reads/writes; no public policies.
+alter table public.diagnostics enable row level security;
+```
+
+The `/api/result?id=<uuid>` function reads a row with the service-role key
+server-side, so the key is never exposed and the anon client can't query the
+table directly.
+
+## Downloadable PDF
+
+The results page has a **Download PDF** button (`window.print()` with a print
+stylesheet). It produces a clean, branded, vector (selectable-text) report — no
+extra dependencies. Interactive elements (buttons, the booking calendar) are
+hidden in print; a report header with the firm name + constraint is added.
+
+## Booking / consultation CTA
+
+The results page and email link to the **AI Automations Debrief** booking widget
+(`closing.ctaUrl` in the industry config). The results page also embeds the
+booking calendar inline and shows a congratulations card. Change the URL/text in
+`src/config/industries/*.ts`.
 
 ### Alternate: Cloudflare Pages
 

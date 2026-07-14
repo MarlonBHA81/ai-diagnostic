@@ -161,8 +161,8 @@ export const genericConfig: IndustryConfig = {
       'Identify the binding constraint. Apply AI to it with proper context and documentation. Verify that the constraint is solved. Identify the new constraint that has emerged. Repeat.',
     quoteAttribution: 'Benjamin Simkin, The AI First Company',
     reRunNote: 'Re-run this every 90 days and compare.',
-    ctaText: '',
-    ctaUrl: '',
+    ctaText: 'Book your AI Automations Debrief',
+    ctaUrl: 'https://link.storyadvantage.co.za/widget/bookings/ai-automations-debrief',
   },
 };
 

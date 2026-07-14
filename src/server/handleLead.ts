@@ -28,6 +28,11 @@ export interface LeadEnv {
   EMAIL_FROM?: string;
   NOTIFY_EMAIL?: string;
   ALLOWED_ORIGIN?: string;
+  /** Supabase project URL + service-role key (server-only) for storing results. */
+  SUPABASE_URL?: string;
+  SUPABASE_SERVICE_ROLE_KEY?: string;
+  /** Base URL for building shareable result links; defaults to the request origin. */
+  APP_URL?: string;
 }
 
 type LeadEvent = LeadCapturedEvent | DiagnosticCompletedEvent;
@@ -101,6 +106,16 @@ export async function handleLead(request: Request, env: LeadEnv): Promise<Respon
     }
   }
 
+  // On completion, store the result in Supabase and attach a shareable link.
+  // Both the forwarded payload (for n8n) and the report email then carry it.
+  if (event.event === 'diagnostic_completed') {
+    const id = await storeResult(env, event).catch(() => null);
+    if (id) {
+      event.resultId = id;
+      event.resultUrl = buildResultUrl(env, request, id);
+    }
+  }
+
   // Clean payload for downstream (drop anti-spam internals).
   const { antiSpam: _drop, ...clean } = event as LeadEvent & { antiSpam?: unknown };
   void _drop;
@@ -112,7 +127,51 @@ export async function handleLead(request: Request, env: LeadEnv): Promise<Respon
     await sendReportEmail(env, event).catch(() => undefined);
   }
 
-  return json({ ok: true, forwarded }, 200, cors);
+  return json({ ok: true, forwarded, resultId: event.event === 'diagnostic_completed' ? event.resultId ?? null : undefined }, 200, cors);
+}
+
+/** Build the shareable results link: APP_URL (or request origin) + /r/<id>. */
+function buildResultUrl(env: LeadEnv, request: Request, id: string): string {
+  const base = (env.APP_URL ?? new URL(request.url).origin).replace(/\/+$/, '');
+  return `${base}/r/${id}`;
+}
+
+/**
+ * Insert the completed diagnostic into the Supabase `diagnostics` table and
+ * return its id. Stores the full event as `payload` plus a few flat columns for
+ * easy querying. Returns null (skips) when Supabase env is unset.
+ */
+async function storeResult(
+  env: LeadEnv,
+  event: DiagnosticCompletedEvent,
+): Promise<string | null> {
+  if (!env.SUPABASE_URL || !env.SUPABASE_SERVICE_ROLE_KEY) return null;
+
+  const { antiSpam: _a, ...payload } = event as DiagnosticCompletedEvent & { antiSpam?: unknown };
+  void _a;
+
+  const row = {
+    email: event.lead.email,
+    business_name: event.lead.businessName,
+    binding_constraint: event.bindingConstraint,
+    constraint_votes: event.constraintVotes,
+    currency: event.baseline.currency,
+    payload,
+  };
+
+  const res = await fetch(`${env.SUPABASE_URL.replace(/\/+$/, '')}/rest/v1/diagnostics`, {
+    method: 'POST',
+    headers: {
+      apikey: env.SUPABASE_SERVICE_ROLE_KEY,
+      Authorization: `Bearer ${env.SUPABASE_SERVICE_ROLE_KEY}`,
+      'content-type': 'application/json',
+      Prefer: 'return=representation',
+    },
+    body: JSON.stringify(row),
+  });
+  if (!res.ok) return null;
+  const data = (await res.json()) as Array<{ id: string }>;
+  return data[0]?.id ?? null;
 }
 
 /** POST the event to the n8n webhook, retrying once on failure. */

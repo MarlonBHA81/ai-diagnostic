@@ -50,6 +50,10 @@ export interface DiagnosticCompletedEvent {
   constraintVotes: number;
   constraintMonthlyCost: number | null;
   zones: ZoneResult[];
+  /** Set server-side after the row is stored in Supabase. */
+  resultId?: string;
+  /** Shareable link to view the stored results (added server-side). */
+  resultUrl?: string;
   /** Honeypot + timing, checked server-side. */
   antiSpam?: { honeypot: string; startedAt: number };
 }

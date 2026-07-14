@@ -186,9 +186,8 @@ export const accountingConfig: IndustryConfig = {
       'Identify the binding constraint. Apply AI to it with proper context and documentation. Verify that the constraint is solved. Identify the new constraint that has emerged. Repeat.',
     quoteAttribution: 'Benjamin Simkin, The AI First Company',
     reRunNote: 'Re-run this every 90 days — and again after busy season — and compare.',
-    // TODO(confirm): CTA copy/URL are placeholders pending the real booking link.
-    ctaText: 'Book a 20-minute constraint review',
-    ctaUrl: 'https://storyadvantage.co/constraint-review',
+    ctaText: 'Book your AI Automations Debrief',
+    ctaUrl: 'https://link.storyadvantage.co.za/widget/bookings/ai-automations-debrief',
   },
 };
 

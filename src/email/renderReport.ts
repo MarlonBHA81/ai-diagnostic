@@ -103,6 +103,11 @@ export function renderReport(
       )}</div>
       <p style="font-size:15px;line-height:1.6;color:${INK_SOFT};margin:0">${whyHtml}</p>
       ${costHtml ? `<p style="font-size:14px;margin:14px 0 0">${costHtml}</p>` : ''}
+      ${
+        event.resultUrl
+          ? `<p style="font-size:14px;margin:14px 0 0"><a href="${escapeHtml(event.resultUrl)}" style="color:${NAVY};font-weight:700">View your full results online →</a></p>`
+          : ''
+      }
     </div>
 
     <h3 style="color:${NAVY};margin:28px 0 10px;font-size:14px;text-transform:uppercase;letter-spacing:0.08em">Summary</h3>
@@ -153,6 +158,7 @@ export function renderReport(
     '',
     whyText,
     costText,
+    event.resultUrl ? `View your full results online: ${event.resultUrl}` : '',
     '',
     'Summary:',
     ...model.zones.map(

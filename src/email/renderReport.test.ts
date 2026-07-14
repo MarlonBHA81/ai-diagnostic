@@ -86,6 +86,14 @@ describe('renderReport', () => {
     expect(r.html).not.toContain('<img src=x');
   });
 
+  it('includes a "view results online" link when resultUrl is set', () => {
+    const ev = baseEvent({ resultUrl: 'https://diag.example/r/abc' });
+    const r = renderReport(ev, accountingConfig);
+    expect(r.html).toContain('https://diag.example/r/abc');
+    expect(r.html).toContain('View your full results online');
+    expect(r.text).toContain('https://diag.example/r/abc');
+  });
+
   it('omits the cost line when no charge-out rate is given', () => {
     const ev = baseEvent({ baseline: { currency: 'ZAR', monthlyRevenue: null, teamSize: null, chargeOutRate: null } });
     const r = renderReport(ev, accountingConfig);

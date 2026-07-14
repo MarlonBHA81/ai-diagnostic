@@ -16,5 +16,8 @@ export default function handler(request: Request): Promise<Response> {
     EMAIL_FROM: process.env.EMAIL_FROM,
     NOTIFY_EMAIL: process.env.NOTIFY_EMAIL,
     ALLOWED_ORIGIN: process.env.ALLOWED_ORIGIN,
+    SUPABASE_URL: process.env.SUPABASE_URL,
+    SUPABASE_SERVICE_ROLE_KEY: process.env.SUPABASE_SERVICE_ROLE_KEY,
+    APP_URL: process.env.APP_URL,
   });
 }

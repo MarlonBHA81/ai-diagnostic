@@ -571,3 +571,96 @@ a { color: var(--sa-accent); }
   color: var(--sa-ink);
   margin-top: var(--sa-space-2);
 }
+
+/* ============================================================================
+   RESULTS ACTIONS · BOOKING · PDF PRINT
+   ============================================================================ */
+
+.results-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--sa-space-3);
+  margin-bottom: var(--sa-space-4);
+}
+.results-actions .btn { padding: var(--sa-space-2) var(--sa-space-4); font-size: var(--sa-text-sm); }
+
+/* Congratulations + booking card */
+.booking-card {
+  border: 2px solid var(--sa-navy);
+  border-radius: var(--sa-radius-lg);
+  padding: var(--sa-space-6);
+  margin-bottom: var(--sa-space-6);
+  background: var(--sa-surface);
+  position: relative;
+  overflow: hidden;
+}
+.booking-card::before {
+  content: "";
+  position: absolute;
+  left: 0; top: 0; right: 0;
+  height: 6px;
+  background: var(--sa-yellow);
+}
+.booking-card__badge {
+  display: inline-block;
+  font-size: var(--sa-text-sm);
+  font-weight: var(--sa-weight-bold);
+  letter-spacing: var(--sa-track-label);
+  text-transform: uppercase;
+  color: var(--sa-navy);
+  margin: var(--sa-space-2) 0 var(--sa-space-3);
+}
+.booking-card__title {
+  font-size: var(--sa-text-2xl);
+  font-weight: var(--sa-weight-black);
+  letter-spacing: -0.01em;
+  margin-bottom: var(--sa-space-3);
+}
+.booking-card__lead { font-size: var(--sa-text-base); color: var(--sa-ink-soft); }
+.booking-card__lead b { color: var(--sa-ink); }
+
+.cta-btn--lg {
+  font-size: var(--sa-text-lg);
+  padding: var(--sa-space-4) var(--sa-space-6);
+}
+
+.booking-embed {
+  width: 100%;
+  min-height: 720px;
+  border: 1px solid var(--sa-line);
+  border-radius: var(--sa-radius-md);
+  margin-top: var(--sa-space-5);
+  background: var(--sa-surface);
+}
+
+/* ---- Print / PDF ---- */
+.print-only { display: none; }
+.print-header { margin-bottom: var(--sa-space-5); font-size: var(--sa-text-base); }
+.print-header__meta { color: var(--sa-ink-soft); font-size: var(--sa-text-sm); margin-top: 4px; }
+
+@media print {
+  @page { margin: 16mm 14mm; }
+  .no-print { display: none !important; }
+  .print-only { display: block !important; }
+
+  body { background: #fff; }
+  .app-shell { min-height: 0; }
+  .main { max-width: none; padding: 0; }
+  .masthead { border-bottom: 1px solid var(--sa-navy); }
+
+  .card, .verdict-card, .next-card, .booking-card, .syn__item {
+    box-shadow: none;
+    break-inside: avoid;
+  }
+  .sec-title, .verdict-card, .next-card, .booking-card { break-inside: avoid; }
+  .bars__row, .rtable tr { break-inside: avoid; }
+
+  /* Ensure brand fills actually print */
+  .verdict-card, .verdict-card::before,
+  .bars__track, .bars__fill,
+  .rtable tr.constraint td,
+  .booking-card::before {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+}
