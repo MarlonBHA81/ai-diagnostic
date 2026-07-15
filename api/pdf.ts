@@ -54,12 +54,22 @@ export default async function handler(req: VReq, res: VRes): Promise<void> {
     return;
   }
 
-  const browser = await puppeteer.launch({
-    args: chromium.args,
-    executablePath: await chromium.executablePath(),
-    headless: chromium.headless,
-    defaultViewport: { width: 1000, height: 1400 },
-  });
+  // Local testing (`vercel dev`): point PUPPETEER_EXECUTABLE_PATH at a local
+  // Chrome. In production (unset) use the serverless @sparticuz/chromium binary.
+  const localChrome = process.env.PUPPETEER_EXECUTABLE_PATH;
+  const browser = localChrome
+    ? await puppeteer.launch({
+        executablePath: localChrome,
+        headless: true,
+        args: ['--no-sandbox', '--disable-setuid-sandbox'],
+        defaultViewport: { width: 1000, height: 1400 },
+      })
+    : await puppeteer.launch({
+        args: chromium.args,
+        executablePath: await chromium.executablePath(),
+        headless: chromium.headless,
+        defaultViewport: { width: 1000, height: 1400 },
+      });
   try {
     const page = await browser.newPage();
     const target = `${env.APP_URL.replace(/\/+$/, '')}/r/${id}`;
