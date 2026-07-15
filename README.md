@@ -252,6 +252,26 @@ All accounting copy lives in `src/config/industries/accounting.ts`, typed agains
 `src/config/IndustryConfig.ts`. The scoring engine and brand tokens are
 industry-agnostic — add a vertical by writing one config file.
 
+## Testing
+
+- **Unit (`npm test`)** — 61 tests: scoring + tiebreaks + 1-1-1, currency in all
+  four currencies, ZA (+27) mobile, email rendering + XSS, the `/api/lead`
+  handler (honeypot, invalid email, <60s, CORS, webhook-fail), and the Supabase
+  Storage helpers (`pdfStorage`).
+- **App locally (`npm run dev`)** — run the quiz; the results page's client-side
+  Download PDF works without any backend.
+- **PDF render smoke test (`npm run smoke:pdf`)** — serves the built app + a mock
+  `/api/result` and drives a local Chrome exactly like `/api/pdf` (navigate to
+  `/r/:id` → `page.pdf()`), writing `smoke-report.pdf`. Requires
+  `npm run build` first and `PUPPETEER_EXECUTABLE_PATH` set to a local Chrome.
+- **Functions locally (`vercel dev`)** — exercises `/api/lead`, `/api/result`,
+  `/api/pdf` against real env (`vercel env pull`); set
+  `PUPPETEER_EXECUTABLE_PATH` so the PDF function uses local Chrome.
+- **End-to-end (Vercel Preview)** — with the `diagnostics` table + public
+  `reports` bucket + env vars set: complete a diagnostic, then verify the
+  Supabase row, the email, `/r/:id`, and `/api/pdf?id=<id>` (first hit
+  generates + uploads; second hit is instant/cached).
+
 ## Ship checklist
 
 - [ ] `LEAD_WEBHOOK_URL` set; n8n workflow live and handling both events.
