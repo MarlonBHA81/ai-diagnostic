@@ -1,0 +1,84 @@
+<!--
+  Paste this into the n8n Resend node's HTML field.
+
+  Expressions read from your WEBHOOK node (named "Webhook" here) so they work
+  even though the Google Sheets node sits between Webhook and Resend. If your
+  webhook node has a different name, change 'Webhook' in each expression.
+  If your payload is NOT nested under .body, remove ".body" from each expression.
+
+  The PDF link is {{ $('Webhook').item.json.body.pdfUrl }} — present once
+  Supabase + APP_URL are configured on Vercel (the app adds it).
+-->
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#f7f8fb;margin:0;padding:24px 0;font-family:Segoe UI,Roboto,Helvetica,Arial,sans-serif;color:#222056">
+  <tr><td align="center">
+    <table role="presentation" width="600" cellpadding="0" cellspacing="0" style="width:600px;max-width:92%">
+
+      <tr><td style="padding:0 8px 16px;font-weight:700;letter-spacing:.04em;font-size:15px;color:#222056">STORY ADVANTAGE</td></tr>
+
+      <tr><td style="padding:0 8px 16px;font-size:16px;line-height:1.5;color:#222056">
+        Hi {{ $('Webhook').item.json.body.lead.firstName }}, your diagnostic is ready. Here's the one thing to fix first.
+      </td></tr>
+
+      <!-- Verdict -->
+      <tr><td>
+        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#ffffff;border:2px solid #222056;border-radius:14px">
+          <tr><td style="height:6px;background:#e3e425;border-radius:12px 12px 0 0;line-height:6px;font-size:6px">&nbsp;</td></tr>
+          <tr><td style="padding:24px">
+            <div style="font-size:12px;text-transform:uppercase;letter-spacing:.1em;color:#58595b;margin-bottom:6px">Your binding constraint</div>
+            <div style="font-size:30px;font-weight:800;letter-spacing:-.02em;margin-bottom:10px;color:#222056">{{ $('Webhook').item.json.body.bindingConstraint }}</div>
+            <p style="font-size:15px;line-height:1.6;color:#58595b;margin:0">
+              It won <b style="color:#222056">{{ $('Webhook').item.json.body.constraintVotes }} of 3</b> synthesis tests — the bottleneck limiting the whole business. Fix this one thing before anything else.
+            </p>
+            <p style="font-size:14px;margin:14px 0 0;color:#222056">
+              {{ $('Webhook').item.json.body.constraintMonthlyCost ? ('Rough monthly cost of this zone: ' + (({ZAR:'R',USD:'$',EUR:'€',GBP:'£'})[$('Webhook').item.json.body.baseline.currency] || '') + ' ' + $('Webhook').item.json.body.constraintMonthlyCost.toLocaleString() + '/month') : '' }}
+            </p>
+          </td></tr>
+        </table>
+      </td></tr>
+
+      <!-- PDF + view links -->
+      <tr><td style="padding:22px 8px 6px" align="center">
+        <table role="presentation" cellpadding="0" cellspacing="0"><tr>
+          <td style="border-radius:10px;background:#222056">
+            <a href="{{ $('Webhook').item.json.body.pdfUrl || ($('Webhook').item.json.body.resultUrl + '?print=1') }}"
+               style="display:inline-block;padding:14px 26px;font-size:15px;font-weight:700;color:#ffffff;text-decoration:none">
+              📄 Download your PDF report
+            </a>
+          </td>
+        </tr></table>
+        <div style="padding-top:12px">
+          <a href="{{ $('Webhook').item.json.body.resultUrl }}" style="font-size:14px;color:#222056;font-weight:600">or view your full results online →</a>
+        </div>
+      </td></tr>
+
+      <!-- Booking -->
+      <tr><td style="padding:24px 8px 6px">
+        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border:2px solid #222056;border-radius:14px;background:#ecedf6">
+          <tr><td style="padding:20px">
+            <div style="font-size:12px;text-transform:uppercase;letter-spacing:.1em;color:#222056;margin-bottom:6px">Your next step</div>
+            <p style="font-size:15px;line-height:1.6;margin:0 0 16px;color:#222056">
+              The fastest way to act on this is a free, no-pressure AI Automations Debrief with Story Advantage — we'll map exactly how to compress {{ $('Webhook').item.json.body.bindingConstraint }} with AI.
+            </p>
+            <table role="presentation" cellpadding="0" cellspacing="0"><tr>
+              <td style="border-radius:10px;background:#e3e425">
+                <a href="https://link.storyadvantage.co.za/widget/bookings/ai-automations-debrief"
+                   style="display:inline-block;padding:13px 24px;font-size:15px;font-weight:700;color:#222056;text-decoration:none">
+                  Book your AI Automations Debrief →
+                </a>
+              </td>
+            </tr></table>
+          </td></tr>
+        </table>
+      </td></tr>
+
+      <tr><td style="padding:26px 8px 8px">
+        <p style="font-size:14px;line-height:1.6;font-style:italic;color:#58595b;border-top:2px solid #222056;padding-top:16px;margin:0">
+          “Identify the binding constraint. Apply AI to it with proper context. Verify it's solved. Identify the new constraint. Repeat.”
+          <br><span style="font-style:normal;font-weight:600;color:#222056">— Benjamin Simkin, The AI First Company</span>
+        </p>
+      </td></tr>
+      <tr><td style="padding:16px 8px 0;font-size:12px;color:#939598">A Story Advantage diagnostic · Re-run it every 90 days and compare.</td></tr>
+
+    </table>
+  </td></tr>
+</table>
