@@ -25,6 +25,11 @@ export function SharedResult({ id }: { id: string }) {
         if (!alive) return;
         setLoad({ status: 'ready', event: data.result });
         requestAnimationFrame(() => setAnimate(true));
+        // If the link asked for the PDF (…/r/:id?print=1), open the print /
+        // save-as-PDF dialog once the results have rendered.
+        if (new URLSearchParams(window.location.search).get('print') === '1') {
+          setTimeout(() => window.print(), 900);
+        }
       })
       .catch(() => alive && setLoad({ status: 'error' }));
     return () => {

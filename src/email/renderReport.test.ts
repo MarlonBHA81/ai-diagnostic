@@ -86,12 +86,13 @@ describe('renderReport', () => {
     expect(r.html).not.toContain('<img src=x');
   });
 
-  it('includes a "view results online" link when resultUrl is set', () => {
+  it('includes PDF + view-online links when resultUrl is set', () => {
     const ev = baseEvent({ resultUrl: 'https://diag.example/r/abc' });
     const r = renderReport(ev, accountingConfig);
-    expect(r.html).toContain('https://diag.example/r/abc');
-    expect(r.html).toContain('View your full results online');
-    expect(r.text).toContain('https://diag.example/r/abc');
+    expect(r.html).toContain('https://diag.example/r/abc?print=1'); // PDF link
+    expect(r.html).toContain('Download your PDF report');
+    expect(r.html).toContain('https://diag.example/r/abc'); // view online
+    expect(r.text).toContain('https://diag.example/r/abc?print=1');
   });
 
   it('omits the cost line when no charge-out rate is given', () => {
