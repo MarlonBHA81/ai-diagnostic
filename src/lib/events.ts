@@ -54,6 +54,8 @@ export interface DiagnosticCompletedEvent {
   resultId?: string;
   /** Shareable link to view the stored results (added server-side). */
   resultUrl?: string;
+  /** Hosted PDF report link (generated on first click, cached in storage). */
+  pdfUrl?: string;
   /** Honeypot + timing, checked server-side. */
   antiSpam?: { honeypot: string; startedAt: number };
 }

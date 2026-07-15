@@ -106,7 +106,7 @@ export function renderReport(
       ${
         event.resultUrl
           ? `<p style="font-size:14px;margin:16px 0 0">
-               <a href="${escapeHtml(event.resultUrl)}?print=1" style="display:inline-block;background:${NAVY};color:#fff;text-decoration:none;font-weight:700;padding:11px 20px;border-radius:10px">📄 Download your PDF report</a>
+               <a href="${escapeHtml(event.pdfUrl ?? `${event.resultUrl}?print=1`)}" style="display:inline-block;background:${NAVY};color:#fff;text-decoration:none;font-weight:700;padding:11px 20px;border-radius:10px">📄 Download your PDF report</a>
                &nbsp;&nbsp;<a href="${escapeHtml(event.resultUrl)}" style="color:${NAVY};font-weight:700">or view online →</a>
              </p>`
           : ''
@@ -161,7 +161,7 @@ export function renderReport(
     '',
     whyText,
     costText,
-    event.resultUrl ? `Download your PDF report: ${event.resultUrl}?print=1` : '',
+    event.resultUrl ? `Download your PDF report: ${event.pdfUrl ?? `${event.resultUrl}?print=1`}` : '',
     event.resultUrl ? `View your full results online: ${event.resultUrl}` : '',
     '',
     'Summary:',

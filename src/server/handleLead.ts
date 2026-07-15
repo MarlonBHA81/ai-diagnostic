@@ -111,8 +111,10 @@ export async function handleLead(request: Request, env: LeadEnv): Promise<Respon
   if (event.event === 'diagnostic_completed') {
     const id = await storeResult(env, event).catch(() => null);
     if (id) {
+      const origin = (env.APP_URL ?? new URL(request.url).origin).replace(/\/+$/, '');
       event.resultId = id;
-      event.resultUrl = buildResultUrl(env, request, id);
+      event.resultUrl = `${origin}/r/${id}`;
+      event.pdfUrl = `${origin}/api/pdf?id=${id}`;
     }
   }
 
@@ -128,12 +130,6 @@ export async function handleLead(request: Request, env: LeadEnv): Promise<Respon
   }
 
   return json({ ok: true, forwarded, resultId: event.event === 'diagnostic_completed' ? event.resultId ?? null : undefined }, 200, cors);
-}
-
-/** Build the shareable results link: APP_URL (or request origin) + /r/<id>. */
-function buildResultUrl(env: LeadEnv, request: Request, id: string): string {
-  const base = (env.APP_URL ?? new URL(request.url).origin).replace(/\/+$/, '');
-  return `${base}/r/${id}`;
 }
 
 /**

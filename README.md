@@ -99,10 +99,27 @@ table directly.
 
 ## Downloadable PDF
 
-The results page has a **Download PDF** button (`window.print()` with a print
-stylesheet). It produces a clean, branded, vector (selectable-text) report — no
-extra dependencies. Interactive elements (buttons, the booking calendar) are
-hidden in print; a report header with the firm name + constraint is added.
+Two paths, both branded (print CSS hides interactive elements and adds a report
+header):
+
+1. **On-page button** — the results page **Download PDF** button uses
+   `window.print()` (client-side, zero deps, vector/selectable text).
+2. **Hosted PDF file** (`/api/pdf?id=<uuid>`) — a Vercel **Node** function
+   renders `/r/:id` with headless Chromium (`puppeteer-core` +
+   `@sparticuz/chromium`), uploads the PDF to **Supabase Storage** (`reports`
+   bucket, `reports/<id>.pdf`), and redirects to the hosted file. It's lazy +
+   cached: generated on the first request per result, then served from storage.
+   The report email's "Download PDF" button links here (`event.pdfUrl`).
+
+Set-up for the hosted PDF:
+
+- Create a **public** Storage bucket named `reports` (Supabase → Storage → New
+  bucket → public).
+- Requires `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`, and `APP_URL` (the
+  function navigates to `${APP_URL}/r/:id`).
+- `@sparticuz/chromium` cold starts take a few seconds — the function sets
+  `maxDuration: 60`, so a plan that allows >10s (Vercel Pro) is recommended;
+  cached hits are instant.
 
 ## Booking / consultation CTA
 
