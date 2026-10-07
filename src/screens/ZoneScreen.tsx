@@ -45,7 +45,7 @@ export function ZoneScreen({ index }: { index: number }) {
     }
 
     track('zone_completed', { zone: zone.id });
-    if (isLast) go('details');
+    if (isLast) go('results');
     else go(index + 1);
   }
 
@@ -180,7 +180,7 @@ export function ZoneScreen({ index }: { index: number }) {
           ← Back
         </button>
         <button className="btn btn--primary" type="button" onClick={handleNext}>
-          {isLast ? 'Get my report →' : 'Next zone →'}
+          {isLast ? 'See my results →' : 'Next zone →'}
         </button>
       </div>
     </div>

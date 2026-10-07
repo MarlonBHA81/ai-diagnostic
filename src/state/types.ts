@@ -32,18 +32,18 @@ export interface ZoneAnswerState {
   desiredFix: string;
 }
 
-/** welcome → baseline → 0..6 (zone index) → details → results */
-export type Step = 'welcome' | 'baseline' | 'details' | 'results' | number;
+/** welcome → baseline → 0..6 (zone index) → results */
+export type Step = 'welcome' | 'baseline' | 'results' | number;
 
 export interface QuizState {
   step: Step;
   lead: LeadDetails | null;
   baseline: Baseline;
   answers: Record<string, ZoneAnswerState>;
-  /** Timestamp (ms) when the quiz was started, for the anti-spam min-duration. */
+  /** Timestamp (ms) when the quiz gate was passed, anti-spam min-duration. */
   startedAt: number | null;
-  /** Honeypot value captured on the details form; empty for real users. */
-  honeypot: string;
+  /** Whether the lead_captured event has been fired (fire-once). */
+  leadCaptured: boolean;
 }
 
 export function emptyAnswer(): ZoneAnswerState {

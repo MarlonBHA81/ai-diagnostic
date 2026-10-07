@@ -205,7 +205,7 @@ export function stateFromCompletedEvent(
     },
     answers,
     startedAt: null,
-    honeypot: '',
+    leadCaptured: true,
   };
 }
 

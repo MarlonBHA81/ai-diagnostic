@@ -17,8 +17,8 @@ import {
 } from './types';
 
 type Action =
-  | { type: 'START'; startedAt: number }
-  | { type: 'SET_LEAD'; lead: LeadDetails; honeypot: string }
+  | { type: 'SET_LEAD'; lead: LeadDetails; startedAt: number }
+  | { type: 'MARK_LEAD_CAPTURED' }
   | { type: 'SET_BASELINE'; patch: Partial<Baseline> }
   | { type: 'SET_ANSWER'; zoneId: string; patch: Partial<ZoneAnswerState> }
   | { type: 'GO'; step: Step }
@@ -38,17 +38,16 @@ function initialState(config: IndustryConfig): QuizState {
     },
     answers,
     startedAt: null,
-    honeypot: '',
+    leadCaptured: false,
   };
 }
 
 function reducer(state: QuizState, action: Action): QuizState {
   switch (action.type) {
-    case 'START':
-      // Stamp the start time once, when the user begins the quiz.
-      return { ...state, startedAt: state.startedAt ?? action.startedAt };
     case 'SET_LEAD':
-      return { ...state, lead: action.lead, honeypot: action.honeypot };
+      return { ...state, lead: action.lead, startedAt: action.startedAt };
+    case 'MARK_LEAD_CAPTURED':
+      return { ...state, leadCaptured: true };
     case 'SET_BASELINE':
       return { ...state, baseline: { ...state.baseline, ...action.patch } };
     case 'SET_ANSWER':
@@ -76,8 +75,8 @@ let contextConfig: IndustryConfig | null = null;
 interface QuizContextValue {
   config: IndustryConfig;
   state: QuizState;
-  start: (startedAt: number) => void;
-  setLead: (lead: LeadDetails, honeypot: string) => void;
+  setLead: (lead: LeadDetails, startedAt: number) => void;
+  markLeadCaptured: () => void;
   setBaseline: (patch: Partial<Baseline>) => void;
   setAnswer: (zoneId: string, patch: Partial<ZoneAnswerState>) => void;
   go: (step: Step) => void;
@@ -100,8 +99,8 @@ export function QuizProvider({
     () => ({
       config,
       state,
-      start: (startedAt) => dispatch({ type: 'START', startedAt }),
-      setLead: (lead, honeypot) => dispatch({ type: 'SET_LEAD', lead, honeypot }),
+      setLead: (lead, startedAt) => dispatch({ type: 'SET_LEAD', lead, startedAt }),
+      markLeadCaptured: () => dispatch({ type: 'MARK_LEAD_CAPTURED' }),
       setBaseline: (patch) => dispatch({ type: 'SET_BASELINE', patch }),
       setAnswer: (zoneId, patch) => dispatch({ type: 'SET_ANSWER', zoneId, patch }),
       go: (step) => dispatch({ type: 'GO', step }),
