@@ -2,10 +2,8 @@ import { useRef, useState } from 'react';
 import type { CountryCode } from 'libphonenumber-js/min';
 import { useQuiz } from '../state/QuizContext';
 import { appConfig } from '../config/app';
-import { renderAccented } from '../lib/text';
 import { COUNTRIES, DEFAULT_COUNTRY, callingCodeFor, validateMobile } from '../lib/phone';
 import { validateLead, type LeadErrors } from '../lib/validation';
-import { sendLeadCaptured } from '../lib/leadClient';
 import { track } from '../lib/analytics';
 import type { LeadDetails } from '../state/types';
 
@@ -27,10 +25,16 @@ const EMPTY: FormState = {
   mobileNational: '',
 };
 
-export function WelcomeDetails() {
-  const { config, state, go, setLead, markLeadCaptured } = useQuiz();
+/**
+ * Details capture, shown after the diagnostic is complete and before the
+ * results. Framed as "where shall we send your report?". On submit it stores
+ * the lead and advances to the results, which fire the single
+ * diagnostic_completed event (carrying these details). No lead event fires
+ * before the quiz is finished.
+ */
+export function Details() {
+  const { state, go, setLead } = useQuiz();
   const [form, setForm] = useState<FormState>(() => {
-    // Restore in-memory values if the user navigated back.
     if (state.lead) {
       return {
         firstName: state.lead.firstName,
@@ -68,12 +72,10 @@ export function WelcomeDetails() {
 
     if (Object.keys(nextErrors).length > 0) {
       setErrors(nextErrors);
-      // Shake + scroll to the first invalid field.
       requestAnimationFrame(() => {
         const el = document.querySelector<HTMLElement>('.field .input--invalid');
         el?.closest('.field')?.classList.remove('shake');
-        // reflow to restart animation
-        void el?.offsetWidth;
+        void el?.offsetWidth; // reflow to restart animation
         el?.closest('.field')?.classList.add('shake');
         el?.scrollIntoView({ behavior: 'smooth', block: 'center' });
         el?.focus({ preventScroll: true });
@@ -81,7 +83,6 @@ export function WelcomeDetails() {
       return;
     }
 
-    const startedAt = Date.now();
     const lead: LeadDetails = {
       firstName: form.firstName.trim(),
       lastName: form.lastName.trim(),
@@ -92,36 +93,21 @@ export function WelcomeDetails() {
       mobileE164: mobile.e164 as string,
     };
 
-    setLead(lead, startedAt);
-    track('diagnostic_started');
+    setLead(lead, honeypotRef.current?.value ?? '');
     track('lead_submitted');
-
-    // Fire lead_captured up front. Never block progression on webhook failure.
-    void sendLeadCaptured({
-      event: 'lead_captured',
-      capturedAt: new Date(startedAt).toISOString(),
-      source: config.sourceTag,
-      lead: {
-        firstName: lead.firstName,
-        lastName: lead.lastName,
-        businessName: lead.businessName,
-        email: lead.email,
-        mobile: lead.mobileE164,
-      },
-      antiSpam: { honeypot: honeypotRef.current?.value ?? '', startedAt },
-    });
-    markLeadCaptured();
-
-    go('baseline');
+    go('results');
   }
 
   const errId = (k: keyof LeadErrors) => (errors[k] ? `err-${k}` : undefined);
 
   return (
     <form className="card" onSubmit={handleSubmit} noValidate>
-      <p className="eyebrow">The 7-Zone Diagnostic · {config.displayName} Edition</p>
-      <h1 className="headline">{renderAccented(config.welcome.headline)}</h1>
-      <p className="lede">{config.welcome.subhead}</p>
+      <p className="eyebrow">Diagnostic complete</p>
+      <h1 className="headline">Where shall we send your report?</h1>
+      <p className="lede">
+        Your 7-zone breakdown is ready. Tell us where to send it and we'll email
+        your full report, with the one constraint to fix first.
+      </p>
 
       <div className="grid-2">
         <Field
@@ -222,7 +208,7 @@ export function WelcomeDetails() {
       </div>
 
       <button className="btn btn--primary" type="submit">
-        Start the diagnostic →
+        Show my report →
       </button>
 
       <p className="consent">

@@ -126,6 +126,31 @@ a { color: var(--sa-accent); }
 .lede { font-size: var(--sa-text-lg); color: var(--sa-ink-soft); }
 .hint { font-size: var(--sa-text-sm); color: var(--sa-ink-faint); }
 
+/* Intro screen bullet list */
+.welcome-points {
+  list-style: none;
+  margin: var(--sa-space-6) 0;
+  padding: 0;
+  display: grid;
+  gap: var(--sa-space-3);
+}
+.welcome-points li {
+  position: relative;
+  padding-left: 1.75rem;
+  font-size: var(--sa-text-base);
+  color: var(--sa-ink);
+}
+.welcome-points li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.15em;
+  width: 1.1rem;
+  height: 1.1rem;
+  border-radius: 50%;
+  background: var(--sa-accent);
+}
+
 /* --- Forms --- */
 .field { margin-bottom: var(--sa-space-5); }
 .field__label {

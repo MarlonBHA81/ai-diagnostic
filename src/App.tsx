@@ -2,7 +2,8 @@ import { useEffect } from 'react';
 import { useQuiz } from './state/QuizContext';
 import { Shell } from './components/Shell';
 import { ProgressRail } from './components/ProgressRail';
-import { WelcomeDetails } from './screens/WelcomeDetails';
+import { Welcome } from './screens/Welcome';
+import { Details } from './screens/Details';
 import { Baseline } from './screens/Baseline';
 import { ZoneScreen } from './screens/ZoneScreen';
 import { Results } from './screens/Results';
@@ -26,20 +27,23 @@ export function App() {
       ? ''
       : step === 'baseline'
         ? 'BASELINE'
-        : step === 'results'
-          ? 'RESULTS'
-          : `ZONE ${(step as number) + 1} / ${zoneCount}`;
+        : step === 'details'
+          ? 'YOUR REPORT'
+          : step === 'results'
+            ? 'RESULTS'
+            : `ZONE ${(step as number) + 1} / ${zoneCount}`;
 
   return (
     <Shell stepLabel={stepLabel}>
       <ProgressRail
         zoneCount={zoneCount}
         currentZone={inZone ? (step as number) : null}
-        allDone={step === 'results'}
+        allDone={step === 'details' || step === 'results'}
       />
-      {step === 'welcome' && <WelcomeDetails />}
+      {step === 'welcome' && <Welcome />}
       {step === 'baseline' && <Baseline />}
       {inZone && <ZoneScreen index={step as number} />}
+      {step === 'details' && <Details />}
       {step === 'results' && <Results />}
     </Shell>
   );
