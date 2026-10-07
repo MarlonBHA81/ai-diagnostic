@@ -53,7 +53,7 @@ export function Results() {
       constraintVotes: model.votes,
       constraintMonthlyCost: model.monthlyCost,
       zones,
-      antiSpam: { honeypot: '', startedAt: state.startedAt ?? 0 },
+      antiSpam: { honeypot: state.honeypot, startedAt: state.startedAt ?? 0 },
     };
     void sendDiagnosticCompleted(event);
   }, [config, state, model, lead, currency]);
