@@ -45,7 +45,7 @@ function selectWinner(zones: ScoredZone[], keys: Key[]): ScoredZone {
   });
 }
 
-/** Test 1 — Volume: max (hours × repetitiveness), tiebreak by compression. */
+/** Test 1, Volume: max (hours × repetitiveness), tiebreak by compression. */
 export function volumeTest(zones: ScoredZone[]): ScoredZone {
   return selectWinner(zones, [
     { value: (z) => z.hoursPerWeek * z.repetitiveness, dir: 'max' },
@@ -53,7 +53,7 @@ export function volumeTest(zones: ScoredZone[]): ScoredZone {
   ]);
 }
 
-/** Test 2 — Margin: max margin impact, tiebreak min AI usage, tiebreak compression. */
+/** Test 2, Margin: max margin impact, tiebreak min AI usage, tiebreak compression. */
 export function marginTest(zones: ScoredZone[]): ScoredZone {
   return selectWinner(zones, [
     { value: (z) => z.marginImpact, dir: 'max' },
@@ -62,7 +62,7 @@ export function marginTest(zones: ScoredZone[]): ScoredZone {
   ]);
 }
 
-/** Test 3 — Partner: max partner involvement, tiebreak by compression. */
+/** Test 3, Partner: max partner involvement, tiebreak by compression. */
 export function partnerTest(zones: ScoredZone[]): ScoredZone {
   return selectWinner(zones, [
     { value: (z) => z.partnerInvolvement, dir: 'max' },

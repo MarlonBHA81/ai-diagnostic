@@ -19,7 +19,7 @@ interface ResultsViewProps {
   onRetake?: () => void;
 }
 
-/** Pure presentation of the results — reused by the live quiz and the shared
+/** Pure presentation of the results, reused by the live quiz and the shared
  *  (/r/:id) page. No side effects, no context. */
 export function ResultsView({
   config,
@@ -41,7 +41,7 @@ export function ResultsView({
     <div className="results">
       {/* Print-only header (shows in the saved PDF, hidden on screen) */}
       <div className="print-only print-header">
-        <strong>STORY ADVANTAGE</strong> — The 7-Zone Diagnostic Report
+        <strong>STORY ADVANTAGE</strong> · The 7-Zone Diagnostic Report
         <div className="print-header__meta">
           {businessName ? `${businessName} · ` : ''}Binding constraint: {model.constraint.name}
         </div>
@@ -91,7 +91,7 @@ export function ResultsView({
           <p className="booking-card__lead">
             The fastest way to act on it is a free, no-pressure <b>AI Automations Debrief</b> with
             Story Advantage. We'll map exactly how to compress{' '}
-            <b>{model.constraint.name}</b> with AI — and what to do this quarter.
+            <b>{model.constraint.name}</b> with AI, and what to do this quarter.
           </p>
           <a className="cta-btn cta-btn--lg no-print" href={bookingUrl} target="_blank" rel="noreferrer">
             {config.closing.ctaText} →
@@ -174,17 +174,17 @@ export function ResultsView({
       <div className="sec-title">How the constraint was identified</div>
       <div className="syn">
         <SynItem
-          k="Test 1 — Heaviest time + repetitiveness"
+          k="Test 1: Heaviest time + repetitiveness"
           zone={model.testWinners.volume.name}
           r={`${fmtHours(model.testWinners.volume.hoursPerWeek)} hrs/week × repetitiveness ${model.testWinners.volume.repetitiveness} = ${model.testWinners.volume.timeRep}. This is where AI saves the most raw hours.`}
         />
         <SynItem
-          k="Test 2 — Highest margin impact, lowest AI usage"
+          k="Test 2: Highest margin impact, lowest AI usage"
           zone={model.testWinners.margin.name}
           r={`${model.testWinners.margin.marginLabel} margin impact with ${model.testWinners.margin.aiLabel} AI usage. Your biggest untapped opportunity.`}
         />
         <SynItem
-          k={`Test 3 — Highest ${config.dimensions.partnerInvolvementLabel.toLowerCase()}`}
+          k={`Test 3: Highest ${config.dimensions.partnerInvolvementLabel.toLowerCase()}`}
           zone={model.testWinners.partner.name}
           r={`${config.dimensions.partnerInvolvementLabel} ${model.testWinners.partner.partnerInvolvement}/5. Solving this frees your scarcest resource: leadership attention.`}
         />
@@ -228,7 +228,7 @@ export function ResultsView({
       {/* Quote */}
       <p className="quote">
         “{config.closing.quote}”
-        <span className="quote__who">— {config.closing.quoteAttribution}</span>
+        <span className="quote__who">{config.closing.quoteAttribution}</span>
       </p>
 
       {onRetake && (

@@ -148,7 +148,7 @@ export function renderReport(
 
     <p style="margin-top:28px;padding-top:16px;border-top:2px solid ${NAVY};font-size:14px;font-style:italic;color:${INK_SOFT};line-height:1.6">
       “${escapeHtml(config.closing.quote)}”<br>
-      <span style="font-style:normal;font-weight:600;color:${NAVY}">— ${escapeHtml(
+      <span style="font-style:normal;font-weight:600;color:${NAVY}">${escapeHtml(
         config.closing.quoteAttribution,
       )}</span>
     </p>
@@ -172,7 +172,7 @@ export function renderReport(
         )} hrs, rep ${z.repetitiveness}, AI ${z.aiLabel}, margin ${z.marginLabel}, partner ${z.partnerInvolvement}/5, score ${z.compressionScore}`,
     ),
     '',
-    `Your next step — ${model.nextStep.heading}:`,
+    `Your next step: ${model.nextStep.heading}`,
     model.nextStep.body,
     model.nextStep.secondZoneName
       ? `Next target: ${model.nextStep.secondZoneName} (score ${model.nextStep.secondZoneScore}).`
@@ -181,7 +181,8 @@ export function renderReport(
     '',
     config.closing.ctaUrl ? `${config.closing.ctaText}: ${config.closing.ctaUrl}` : '',
     '',
-    `"${config.closing.quote}" — ${config.closing.quoteAttribution}`,
+    `"${config.closing.quote}"`,
+    config.closing.quoteAttribution,
     config.closing.reRunNote,
   ]
     .filter((l) => l !== '')

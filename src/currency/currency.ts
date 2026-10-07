@@ -4,7 +4,7 @@
  * The chosen currency drives every monetary display in the app and the report
  * email. Changing currency reformats displays; it never converts values.
  * Thousands separators and grouping come from Intl.NumberFormat with the
- * matching locale — never hand-rolled.
+ * matching locale, never hand-rolled.
  */
 
 export type CurrencyCode = 'ZAR' | 'USD' | 'EUR' | 'GBP';

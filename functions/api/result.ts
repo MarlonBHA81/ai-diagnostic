@@ -1,5 +1,5 @@
 /**
- * GET /api/result — Cloudflare Pages Function (alternate host).
+ * GET /api/result, Cloudflare Pages Function (alternate host).
  */
 import { handleResult } from '../../src/server/handleResult';
 import type { LeadEnv } from '../../src/server/handleLead';

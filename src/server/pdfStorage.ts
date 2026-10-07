@@ -1,6 +1,6 @@
 /**
  * Supabase Storage helpers for the hosted PDF report. The PDF lives in a public
- * bucket named `reports` at `reports/<id>.pdf`. Plain fetch — no SDK.
+ * bucket named `reports` at `reports/<id>.pdf`. Plain fetch, no SDK.
  */
 import type { LeadEnv } from './handleLead';
 

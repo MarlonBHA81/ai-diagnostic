@@ -1,5 +1,5 @@
 /**
- * GET /api/result — Vercel Edge Function. Thin adapter over the shared handler.
+ * GET /api/result, Vercel Edge Function. Thin adapter over the shared handler.
  */
 import { handleResult } from '../src/server/handleResult';
 

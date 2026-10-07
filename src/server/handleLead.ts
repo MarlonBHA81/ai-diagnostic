@@ -2,7 +2,7 @@
  * Framework-agnostic handler for POST /api/lead.
  *
  * Takes a standard Web `Request` and returns a `Response`, so it runs
- * unchanged on Vercel (Edge) and Cloudflare Pages Functions — the platform
+ * unchanged on Vercel (Edge) and Cloudflare Pages Functions, the platform
  * files are thin adapters that just pass `request` and the env object here.
  *
  * The browser only ever talks to this same-origin route; the webhook URL and
@@ -14,7 +14,7 @@
  *   - Forward the (cleaned) event to LEAD_WEBHOOK_URL, retrying once.
  *   - On diagnostic_completed, email the prospect their report via Resend
  *     (skipped silently if EMAIL_API_KEY / EMAIL_FROM are unset).
- * Progression is never blocked on webhook/email failure — this returns 200 as
+ * Progression is never blocked on webhook/email failure, this returns 200 as
  * long as the request itself is well-formed and not spam.
  */
 import { isValidEmail } from '../lib/validation';
@@ -191,7 +191,7 @@ async function forwardWebhook(url: string | undefined, payload: unknown): Promis
 /** Send the prospect's report (and optional internal alert) via Resend. */
 async function sendReportEmail(env: LeadEnv, event: DiagnosticCompletedEvent): Promise<void> {
   if (!env.EMAIL_API_KEY || !env.EMAIL_FROM) {
-    console.warn('[email] skipped — EMAIL_API_KEY and/or EMAIL_FROM not set in the environment');
+    console.warn('[email] skipped, EMAIL_API_KEY and/or EMAIL_FROM not set in the environment');
     return;
   }
 

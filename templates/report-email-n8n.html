@@ -6,7 +6,7 @@
   webhook node has a different name, change 'Webhook' in each expression.
   If your payload is NOT nested under .body, remove ".body" from each expression.
 
-  The PDF link is {{ $('Webhook').item.json.body.pdfUrl }} — present once
+  The PDF link is {{ $('Webhook').item.json.body.pdfUrl }}, present once
   Supabase + APP_URL are configured on Vercel (the app adds it).
 -->
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#f7f8fb;margin:0;padding:24px 0;font-family:Segoe UI,Roboto,Helvetica,Arial,sans-serif;color:#222056">
@@ -27,7 +27,7 @@
             <div style="font-size:12px;text-transform:uppercase;letter-spacing:.1em;color:#58595b;margin-bottom:6px">Your binding constraint</div>
             <div style="font-size:30px;font-weight:800;letter-spacing:-.02em;margin-bottom:10px;color:#222056">{{ $('Webhook').item.json.body.bindingConstraint }}</div>
             <p style="font-size:15px;line-height:1.6;color:#58595b;margin:0">
-              It won <b style="color:#222056">{{ $('Webhook').item.json.body.constraintVotes }} of 3</b> synthesis tests — the bottleneck limiting the whole business. Fix this one thing before anything else.
+              It won <b style="color:#222056">{{ $('Webhook').item.json.body.constraintVotes }} of 3</b> synthesis tests: the bottleneck limiting the whole business. Fix this one thing before anything else.
             </p>
             <p style="font-size:14px;margin:14px 0 0;color:#222056">
               {{ $('Webhook').item.json.body.constraintMonthlyCost ? ('Rough monthly cost of this zone: ' + (({ZAR:'R',USD:'$',EUR:'€',GBP:'£'})[$('Webhook').item.json.body.baseline.currency] || '') + ' ' + $('Webhook').item.json.body.constraintMonthlyCost.toLocaleString() + '/month') : '' }}
@@ -57,7 +57,7 @@
           <tr><td style="padding:20px">
             <div style="font-size:12px;text-transform:uppercase;letter-spacing:.1em;color:#222056;margin-bottom:6px">Your next step</div>
             <p style="font-size:15px;line-height:1.6;margin:0 0 16px;color:#222056">
-              The fastest way to act on this is a free, no-pressure AI Automations Debrief with Story Advantage — we'll map exactly how to compress {{ $('Webhook').item.json.body.bindingConstraint }} with AI.
+              The fastest way to act on this is a free, no-pressure AI Automations Debrief with Story Advantage. We'll map exactly how to compress {{ $('Webhook').item.json.body.bindingConstraint }} with AI.
             </p>
             <table role="presentation" cellpadding="0" cellspacing="0"><tr>
               <td style="border-radius:10px;background:#e3e425">
@@ -74,7 +74,7 @@
       <tr><td style="padding:26px 8px 8px">
         <p style="font-size:14px;line-height:1.6;font-style:italic;color:#58595b;border-top:2px solid #222056;padding-top:16px;margin:0">
           “Identify the binding constraint. Apply AI to it with proper context. Verify it's solved. Identify the new constraint. Repeat.”
-          <br><span style="font-style:normal;font-weight:600;color:#222056">— Benjamin Simkin, The AI First Company</span>
+          <br><span style="font-style:normal;font-weight:600;color:#222056">Benjamin Simkin, The AI First Company</span>
         </p>
       </td></tr>
       <tr><td style="padding:16px 8px 0;font-size:12px;color:#939598">A Story Advantage diagnostic · Re-run it every 90 days and compare.</td></tr>

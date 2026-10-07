@@ -1,5 +1,5 @@
 /**
- * IndustryConfig — the single place all vertical copy lives.
+ * IndustryConfig, the single place all vertical copy lives.
  *
  * The scoring engine (src/scoring) and the brand tokens (src/styles/tokens.css)
  * are industry-agnostic. To add a vertical you author one file implementing this
@@ -8,7 +8,7 @@
  * NOTE: the prose in src/config/industries/accounting.ts must be ported VERBATIM
  * from the prototype worksheet `7-zone-diagnostic-accounting-firm.html`. Until the
  * prototype is supplied, that file carries clearly-marked PLACEHOLDER copy so the
- * app compiles and renders — it is not the final wording.
+ * app compiles and renders, it is not the final wording.
  */
 
 import type { AiUsageLevel, MarginImpactLevel } from '../scoring/types';

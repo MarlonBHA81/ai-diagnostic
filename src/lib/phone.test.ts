@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { validateMobile, callingCodeFor, DEFAULT_COUNTRY, COUNTRIES } from './phone';
 
-describe('phone — defaults and country list', () => {
+describe('phone, defaults and country list', () => {
   it('defaults to ZA (+27) and lists ZA first', () => {
     expect(DEFAULT_COUNTRY).toBe('ZA');
     expect(callingCodeFor('ZA')).toBe('27');
@@ -9,7 +9,7 @@ describe('phone — defaults and country list', () => {
   });
 });
 
-describe('validateMobile — ZA (+27) formats', () => {
+describe('validateMobile, ZA (+27) formats', () => {
   it('accepts a national ZA mobile with leading 0', () => {
     const r = validateMobile('082 123 4567', 'ZA');
     expect(r.valid).toBe(true);
@@ -29,7 +29,7 @@ describe('validateMobile — ZA (+27) formats', () => {
   });
 });
 
-describe('validateMobile — other countries', () => {
+describe('validateMobile, other countries', () => {
   it('validates a US number', () => {
     const r = validateMobile('(202) 555-0182', 'US');
     expect(r.valid).toBe(true);

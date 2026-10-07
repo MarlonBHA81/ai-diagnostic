@@ -200,15 +200,15 @@ export function WelcomeDetails() {
           />
         </div>
         <p className="hint" style={{ marginTop: 'var(--sa-space-2)' }}>
-          We'll dial +{callingCodeFor(form.mobileCountry)}. International format —
-          pick your country on the left.
+          We'll dial +{callingCodeFor(form.mobileCountry)}. International format.
+          Pick your country on the left.
         </p>
         <div className="field__error" id={errId('mobile')} aria-live="polite">
           {errors.mobile ?? ''}
         </div>
       </div>
 
-      {/* Honeypot — hidden from real users; bots that fill it are rejected server-side. */}
+      {/* Honeypot, hidden from real users; bots that fill it are rejected server-side. */}
       <div className="hp" aria-hidden="true">
         <label htmlFor="company_website">Company website</label>
         <input

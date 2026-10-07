@@ -1,11 +1,11 @@
 /*
  * ============================================================================
- *  DESIGN TOKENS — Story Advantage brand system
+ *  DESIGN TOKENS, Story Advantage brand system
  * ============================================================================
  *  Values extracted from the Story Advantage Brand Manual (brand colours +
  *  brand fonts pages). These are the source of truth; the app and report email
  *  reference only these tokens, never raw hex. The scoring engine and screens
- *  are brand-agnostic — reskinning a vertical means editing this file alone.
+ *  are brand-agnostic, reskinning a vertical means editing this file alone.
  *
  *  Palette (from the manual):
  *    Navy  #222056   Yellow #e3e425   Black #000000
@@ -62,7 +62,7 @@
      distinct, high-contrast signal. This dark red is a functional UI state
      token used ONLY for validation errors (border + aria-live text), kept
      separate from the brand palette so brand elements stay navy/yellow. */
-  --sa-error: #c0362c;       /* ~5.9:1 on white — AA for text */
+  --sa-error: #c0362c;       /* ~5.9:1 on white, AA for text */
   --sa-error-soft: #fbeceb;
 
   /* --- Typography (brand fonts, with open/system fallbacks) --- */

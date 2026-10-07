@@ -1,5 +1,5 @@
 /**
- * Progress rail — 7 zone ticks. A tick is "done" once its zone is passed and
+ * Progress rail, 7 zone ticks. A tick is "done" once its zone is passed and
  * "current" for the active zone. Baseline and welcome show no filled ticks;
  * results shows all done.
  */

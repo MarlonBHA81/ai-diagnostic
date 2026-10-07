@@ -40,7 +40,7 @@ export interface QuizState {
   lead: LeadDetails | null;
   baseline: Baseline;
   answers: Record<string, ZoneAnswerState>;
-  /** Timestamp (ms) when the quiz gate was passed — anti-spam min-duration. */
+  /** Timestamp (ms) when the quiz gate was passed, anti-spam min-duration. */
   startedAt: number | null;
   /** Whether the lead_captured event has been fired (fire-once). */
   leadCaptured: boolean;

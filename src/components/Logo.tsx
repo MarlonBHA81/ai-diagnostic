@@ -3,7 +3,7 @@
  *
  * Inline SVG rendition of the SA brain-lightbulb mark in brand colours
  * (navy #222056 + yellow #e3e425) plus the wordmark. This is a lightweight,
- * self-contained placeholder for the official logo asset — drop the real
+ * self-contained placeholder for the official logo asset, drop the real
  * {{LOGO_URL_OR_FILE}} in here (an <img>) when supplied; nothing else changes.
  */
 export function Logo() {

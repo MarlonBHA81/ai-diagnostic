@@ -46,7 +46,7 @@ export interface ResultsModel {
   notes: Array<{ name: string; bottleneck: string; desiredFix: string }>;
 }
 
-/** A run of text, optionally bolded — lets the screen and email share wording. */
+/** A run of text, optionally bolded, lets the screen and email share wording. */
 export interface TextRun {
   t: string;
   b?: boolean;
@@ -234,7 +234,7 @@ export function whyRuns(
   }
   if (model.wonMargin) {
     bits.push([
-      { t: "it's your biggest untapped opportunity — " },
+      { t: "it's your biggest untapped opportunity: " },
       { t: `${c.marginLabel}`, b: true },
       { t: ' margin impact with only ' },
       { t: `${c.aiLabel}`, b: true },
@@ -261,6 +261,6 @@ export function whyRuns(
     runs.push(...bit);
     runs.push({ t: i < bits.length - 1 ? '; ' : '. ' });
   });
-  runs.push({ t: 'Fix this one thing first — everything else waits.' });
+  runs.push({ t: 'Fix this one thing first. Everything else waits.' });
   return runs;
 }

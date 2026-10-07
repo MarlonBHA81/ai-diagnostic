@@ -6,7 +6,7 @@
 
 /**
  * Pragmatic email check: one @, a dotted domain, no spaces. Deliberately not a
- * full RFC 5322 parser — that rejects almost nothing and accepts garbage. The
+ * full RFC 5322 parser, that rejects almost nothing and accepts garbage. The
  * server re-runs this exact function so the client can't bypass it.
  */
 export function isValidEmail(value: string): boolean {
@@ -37,7 +37,7 @@ export function validateLead(lead: LeadInput): LeadErrors {
   if (!isNonEmpty(lead.lastName)) errors.lastName = 'Please enter your last name.';
   if (!isNonEmpty(lead.businessName)) errors.businessName = 'Please enter your business name.';
   if (!isValidEmail(lead.email)) errors.email = 'Please enter a valid email address.';
-  // E.164: leading + then 8–15 digits.
+  // E.164: leading + then 8-15 digits.
   if (!/^\+[1-9]\d{7,14}$/.test(lead.mobile)) {
     errors.mobile = 'Please enter a valid mobile number.';
   }

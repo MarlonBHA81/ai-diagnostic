@@ -54,7 +54,7 @@ describe('scoreZones', () => {
   });
 });
 
-describe('Test 1 — volume (max hours × repetitiveness, tiebreak compression)', () => {
+describe('Test 1, volume (max hours × repetitiveness, tiebreak compression)', () => {
   it('picks the highest hours × repetitiveness', () => {
     const zones = scoreZones([
       zone('a', { hoursPerWeek: 10, repetitiveness: 2 }), // 20
@@ -74,7 +74,7 @@ describe('Test 1 — volume (max hours × repetitiveness, tiebreak compression)'
   });
 });
 
-describe('Test 2 — margin (max margin, tiebreak min AI usage, tiebreak compression)', () => {
+describe('Test 2, margin (max margin, tiebreak min AI usage, tiebreak compression)', () => {
   it('picks the highest margin impact', () => {
     const zones = scoreZones([
       zone('a', { marginImpact: 2 }),
@@ -102,7 +102,7 @@ describe('Test 2 — margin (max margin, tiebreak min AI usage, tiebreak compres
   });
 });
 
-describe('Test 3 — partner (max partner involvement, tiebreak compression)', () => {
+describe('Test 3, partner (max partner involvement, tiebreak compression)', () => {
   it('picks the highest partner involvement', () => {
     const zones = scoreZones([
       zone('a', { partnerInvolvement: 2 }),
@@ -121,7 +121,7 @@ describe('Test 3 — partner (max partner involvement, tiebreak compression)', (
   });
 });
 
-describe('runDiagnostic — binding constraint', () => {
+describe('runDiagnostic, binding constraint', () => {
   it('takes the mode of the three test winners (2-1 split)', () => {
     // Design zones so 'a' wins volume + partner, 'b' wins margin.
     const zones: ZoneAnswer[] = [
@@ -149,7 +149,7 @@ describe('runDiagnostic — binding constraint', () => {
   });
 
   it('on a 1-1-1 split, the highest compression among the three winners wins (votes = 1)', () => {
-    // a wins volume, b wins margin, c wins partner — all distinct.
+    // a wins volume, b wins margin, c wins partner, all distinct.
     // c has the highest compression, so it must win the tiebreak.
     const zones: ZoneAnswer[] = [
       // a: dominates hours×rep but low compression (high AI usage)

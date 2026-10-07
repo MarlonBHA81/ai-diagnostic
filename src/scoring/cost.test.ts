@@ -6,7 +6,7 @@ import type { CurrencyCode } from '../currency/currency';
 // Separator (space vs comma) is ICU-dependent; strip it and check symbol+digits.
 const stripSep = (s: string) => s.replace(/[\s,  ]/g, '');
 
-describe('constraint monthly cost — formatted in all four currencies', () => {
+describe('constraint monthly cost, formatted in all four currencies', () => {
   // hours 20/wk × 4.33 × rate 1000 = 86,600
   const cost = constraintMonthlyCost(20, 1000);
 

@@ -1,5 +1,5 @@
 /**
- * /api/lead — Cloudflare Pages Function (alternate host).
+ * /api/lead, Cloudflare Pages Function (alternate host).
  * Thin adapter over the shared handler; Cloudflare passes env in the context.
  * The primary deployment target is Vercel (see api/lead.ts); this file lets the
  * same code also run on Cloudflare Pages unchanged.

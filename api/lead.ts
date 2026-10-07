@@ -1,5 +1,5 @@
 /**
- * POST /api/lead — Vercel Edge Function.
+ * POST /api/lead, Vercel Edge Function.
  * Thin adapter: reads env from process.env and delegates to the shared handler.
  */
 import { handleLead } from '../src/server/handleLead';

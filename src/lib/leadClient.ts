@@ -1,6 +1,6 @@
 /**
  * Client for the serverless /api/lead route. The browser never sees the webhook
- * URL or email key — it only talks to our own same-origin route, which forwards
+ * URL or email key, it only talks to our own same-origin route, which forwards
  * to LEAD_WEBHOOK_URL. Progression must never block on webhook failure, so all
  * calls here swallow errors and resolve.
  */

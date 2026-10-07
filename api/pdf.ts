@@ -1,12 +1,12 @@
 /**
- * GET /api/pdf?id=<uuid> — Vercel Node function.
+ * GET /api/pdf?id=<uuid>, Vercel Node function.
  *
  * Renders the shared results page (/r/:id) to a real PDF with headless Chromium,
  * stores it in Supabase Storage (bucket `reports`), and redirects to the hosted
  * file. Lazy + cached: if the PDF already exists it redirects immediately, so it
  * only generates on the first request per result.
  *
- * Node runtime (not Edge) — Chromium needs Node APIs.
+ * Node runtime (not Edge), Chromium needs Node APIs.
  */
 import chromium from '@sparticuz/chromium';
 import puppeteer from 'puppeteer-core';

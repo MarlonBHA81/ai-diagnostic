@@ -32,7 +32,7 @@ describe('currency config', () => {
   });
 });
 
-describe('formatMoney — symbol + grouped digits in all four currencies', () => {
+describe('formatMoney, symbol + grouped digits in all four currencies', () => {
   it('ZAR shows R and grouped 84000', () => {
     const s = formatMoney(84000, 'ZAR');
     expect(s.startsWith('R')).toBe(true);

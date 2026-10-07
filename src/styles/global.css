@@ -221,7 +221,7 @@ a { color: var(--sa-accent); }
   text-align: center;
 }
 
-/* Honeypot — visually and programmatically hidden from real users. */
+/* Honeypot, visually and programmatically hidden from real users. */
 .hp {
   position: absolute !important;
   left: -9999px !important;
@@ -240,7 +240,7 @@ a { color: var(--sa-accent); }
 }
 
 /* ============================================================================
-   QUIZ COMPONENTS (baseline + zones) — restyled from the prototype to SA tokens
+   QUIZ COMPONENTS (baseline + zones), restyled from the prototype to SA tokens
    ============================================================================ */
 
 /* Zone header */
@@ -294,7 +294,7 @@ a { color: var(--sa-accent); }
 }
 .qblock--unanswered .qblock__label::after { content: " •"; color: var(--sa-error); }
 
-/* Segmented 1–5 scale */
+/* Segmented 1-5 scale */
 .seg { display: flex; gap: var(--sa-space-2); flex-wrap: wrap; }
 .seg__opt {
   flex: 1;

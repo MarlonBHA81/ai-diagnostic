@@ -4,7 +4,7 @@
  * on-screen results and the report email always use the same copy).
  *
  * Available verticals:
- *   - genericConfig     (Generic Business Edition — the base prototype)
+ *   - genericConfig     (Generic Business Edition, the base prototype)
  *   - accountingConfig  (Accounting Firm Edition)
  */
 export { genericConfig as activeConfig } from './industries/generic';

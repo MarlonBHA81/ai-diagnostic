@@ -6,7 +6,7 @@ import {
 } from '../currency/currency';
 import { parseNum } from '../lib/num';
 
-/** Screen 2 — Firm Baseline, with the multi-currency selector that drives every
+/** Screen 2, Firm Baseline, with the multi-currency selector that drives every
  *  later money display and the webhook payload. Changing currency reformats; it
  *  does not convert values. */
 export function Baseline() {

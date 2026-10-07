@@ -1,5 +1,5 @@
 /**
- * GET /api/result?id=<uuid> — returns a stored diagnostic_completed payload from
+ * GET /api/result?id=<uuid>, returns a stored diagnostic_completed payload from
  * Supabase so the shareable results page (/r/:id) can render it. Read-only,
  * public (results are shared by link); the service key stays server-side.
  */
