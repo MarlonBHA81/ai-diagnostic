@@ -190,7 +190,10 @@ async function forwardWebhook(url: string | undefined, payload: unknown): Promis
 
 /** Send the prospect's report (and optional internal alert) via Resend. */
 async function sendReportEmail(env: LeadEnv, event: DiagnosticCompletedEvent): Promise<void> {
-  if (!env.EMAIL_API_KEY || !env.EMAIL_FROM) return; // skip silently if unconfigured
+  if (!env.EMAIL_API_KEY || !env.EMAIL_FROM) {
+    console.warn('[email] skipped — EMAIL_API_KEY and/or EMAIL_FROM not set in the environment');
+    return;
+  }
 
   const report = renderReport(event, activeConfig);
 
@@ -221,7 +224,7 @@ interface ResendMessage {
 }
 
 async function resendSend(apiKey: string, msg: ResendMessage): Promise<void> {
-  await fetch('https://api.resend.com/emails', {
+  const res = await fetch('https://api.resend.com/emails', {
     method: 'POST',
     headers: {
       Authorization: `Bearer ${apiKey}`,
@@ -229,4 +232,12 @@ async function resendSend(apiKey: string, msg: ResendMessage): Promise<void> {
     },
     body: JSON.stringify(msg),
   });
+  if (!res.ok) {
+    // Surface the reason (bad key = 401, unverified from-domain = 403,
+    // invalid payload = 422, …) in the server logs so it's debuggable.
+    const detail = await res.text().catch(() => '');
+    console.error(`[email] Resend ${res.status} sending to ${msg.to}: ${detail}`);
+    return;
+  }
+  console.info(`[email] sent to ${msg.to}`);
 }
