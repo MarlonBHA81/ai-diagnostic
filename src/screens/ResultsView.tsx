@@ -1,4 +1,4 @@
-import { Fragment } from 'react';
+import { Fragment, useEffect, useState } from 'react';
 import type { IndustryConfig } from '../config/IndustryConfig';
 import type { ResultsModel } from '../results/buildResult';
 import { whyRuns } from '../results/buildResult';
@@ -36,6 +36,17 @@ export function ResultsView({
   const why = whyRuns(model, config, businessName);
   const partnerShort = config.dimensions.partnerInvolvementLabel.split(' ')[0];
   const bookingUrl = config.closing.ctaUrl;
+
+  const [bookingOpen, setBookingOpen] = useState(false);
+  // Close the booking popup on Escape.
+  useEffect(() => {
+    if (!bookingOpen) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setBookingOpen(false);
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [bookingOpen]);
 
   return (
     <div className="results">
@@ -89,26 +100,20 @@ export function ResultsView({
           <div className="booking-card__badge">Congratulations{firstName ? `, ${firstName}` : ''} 🎉</div>
           <h2 className="booking-card__title">You've found where AI goes first.</h2>
           <p className="booking-card__lead">
-            The fastest way to act on it is a free, no-pressure <b>AI Automations Debrief</b> with
-            Story Advantage. We'll map exactly how to compress{' '}
-            <b>{model.constraint.name}</b> with AI, and what to do this quarter.
+            The fastest way to act on it is a free, <b>AI Automations Debrief</b> with
+            our team at Story Advantage. We'll map exactly how to compress{' '}
+            <b>{model.constraint.name}</b> with AI, and what you can do to improve
+            it this quarter.
           </p>
-          <a className="cta-btn cta-btn--lg no-print" href={bookingUrl} target="_blank" rel="noreferrer">
-            {config.closing.ctaText} →
-          </a>
-          <iframe
-            className="booking-embed no-print"
-            src={bookingUrl}
-            title={config.closing.ctaText}
-            loading="lazy"
-            scrolling="no"
-          />
-          <p className="hint no-print" style={{ textAlign: 'center' }}>
-            Can't see the calendar?{' '}
-            <a href={bookingUrl} target="_blank" rel="noreferrer">
-              Open the booking page →
-            </a>
-          </p>
+          <div className="booking-card__cta no-print">
+            <button
+              className="cta-btn cta-btn--lg"
+              type="button"
+              onClick={() => setBookingOpen(true)}
+            >
+              {config.closing.ctaText} →
+            </button>
+          </div>
         </div>
       )}
 
@@ -203,9 +208,9 @@ export function ResultsView({
         )}
         {model.nextStep.firmExample && <p className="firm-eg">{model.nextStep.firmExample}</p>}
         {bookingUrl && (
-          <a className="cta-btn no-print" href={bookingUrl} target="_blank" rel="noreferrer">
+          <button className="cta-btn no-print" type="button" onClick={() => setBookingOpen(true)}>
             {config.closing.ctaText} →
-          </a>
+          </button>
         )}
       </div>
 
@@ -225,15 +230,45 @@ export function ResultsView({
         </>
       )}
 
-      {/* Quote */}
-      <p className="quote">
-        “{config.closing.quote}”
-        <span className="quote__who">{config.closing.quoteAttribution}</span>
-      </p>
-
       {onRetake && (
         <div className="nav no-print">
           <span className="nav-note">{config.closing.reRunNote}</span>
+        </div>
+      )}
+
+      {/* Booking popup */}
+      {bookingUrl && bookingOpen && (
+        <div
+          className="booking-modal no-print"
+          role="dialog"
+          aria-modal="true"
+          aria-label={config.closing.ctaText}
+          onClick={() => setBookingOpen(false)}
+        >
+          <div className="booking-modal__panel" onClick={(e) => e.stopPropagation()}>
+            <button
+              className="booking-modal__close"
+              type="button"
+              aria-label="Close"
+              onClick={() => setBookingOpen(false)}
+            >
+              ×
+            </button>
+            <iframe
+              className="booking-modal__frame"
+              src={bookingUrl}
+              title={config.closing.ctaText}
+              loading="lazy"
+            />
+            <a
+              className="booking-modal__link"
+              href={bookingUrl}
+              target="_blank"
+              rel="noreferrer"
+            >
+              Open in a new tab →
+            </a>
+          </div>
         </div>
       )}
     </div>

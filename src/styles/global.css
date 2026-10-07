@@ -559,9 +559,13 @@ a { color: var(--sa-accent); }
   background: var(--sa-navy);
   color: #fff;
   text-decoration: none;
+  font-family: inherit;
+  font-size: var(--sa-text-base);
   font-weight: var(--sa-weight-semibold);
   padding: var(--sa-space-3) var(--sa-space-6);
+  border: 0;
   border-radius: var(--sa-radius-md);
+  cursor: pointer;
 }
 .cta-btn:hover { background: var(--sa-navy-hover); }
 
@@ -649,13 +653,62 @@ a { color: var(--sa-accent); }
   padding: var(--sa-space-4) var(--sa-space-6);
 }
 
-.booking-embed {
+/* Centered CTA under the booking card */
+.booking-card__cta {
+  margin-top: var(--sa-space-5);
+  text-align: center;
+}
+
+/* Booking popup (modal) */
+.booking-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--sa-space-4);
+  background: rgba(34, 32, 86, 0.55);
+}
+.booking-modal__panel {
+  position: relative;
   width: 100%;
-  min-height: 720px;
+  max-width: 760px;
+  max-height: 92vh;
+  display: flex;
+  flex-direction: column;
+  padding: var(--sa-space-6) var(--sa-space-5) var(--sa-space-5);
+  background: var(--sa-surface);
+  border: 2px solid var(--sa-navy);
+  border-radius: var(--sa-radius-lg);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.35);
+}
+.booking-modal__close {
+  position: absolute;
+  top: 6px;
+  right: 14px;
+  background: none;
+  border: 0;
+  cursor: pointer;
+  font-size: 30px;
+  line-height: 1;
+  color: var(--sa-ink-soft);
+}
+.booking-modal__close:hover { color: var(--sa-navy); }
+.booking-modal__frame {
+  flex: 1 1 auto;
+  width: 100%;
+  min-height: 70vh;
   border: 1px solid var(--sa-line);
   border-radius: var(--sa-radius-md);
-  margin-top: var(--sa-space-5);
   background: var(--sa-surface);
+}
+.booking-modal__link {
+  margin-top: var(--sa-space-3);
+  text-align: center;
+  font-size: var(--sa-text-sm);
+  font-weight: var(--sa-weight-semibold);
+  color: var(--sa-navy);
 }
 
 /* ---- Print / PDF ---- */
