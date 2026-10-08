@@ -3,14 +3,51 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>The 7-Zone Business Diagnostic · Accounting Firm Edition</title>
+
+    <!-- Primary SEO. Matches the active (generic Business) edition in
+         src/config/active.ts; update the wording if you switch verticals. -->
+    <title>The 7-Zone Business Diagnostic | Story Advantage</title>
     <meta
       name="description"
-      content="Where should AI go first in your firm? A Story Advantage diagnostic."
+      content="Where should AI go first in your business? Score seven zones across five dimensions, find the one binding constraint holding everything back, and get a free report from Story Advantage."
+    />
+    <meta name="robots" content="index, follow" />
+    <meta name="author" content="Story Advantage" />
+    <meta name="theme-color" content="#222056" />
+    <link rel="canonical" href="https://diagnostic.storyadvantage.agency/" />
+
+    <!-- Open Graph (link previews) -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Story Advantage" />
+    <meta property="og:title" content="The 7-Zone Business Diagnostic" />
+    <meta
+      property="og:description"
+      content="Where should AI go first in your business? Find your binding constraint and get a free report."
+    />
+    <meta property="og:url" content="https://diagnostic.storyadvantage.agency/" />
+    <!-- Add a 1200x630 share image when available, e.g.:
+    <meta property="og:image" content="https://diagnostic.storyadvantage.agency/og-image.png" /> -->
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content="The 7-Zone Business Diagnostic" />
+    <meta
+      name="twitter:description"
+      content="Where should AI go first in your business? Find your binding constraint and get a free report."
+    />
+
+    <!-- Brand favicon (inline SVG: navy tile + yellow dot) -->
+    <link
+      rel="icon"
+      href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2032%2032'%3E%3Crect%20width='32'%20height='32'%20rx='7'%20fill='%23222056'/%3E%3Ccircle%20cx='16'%20cy='16'%20r='7'%20fill='%23e3e425'/%3E%3C/svg%3E"
     />
   </head>
   <body>
     <div id="root"></div>
+    <noscript>
+      The 7-Zone Business Diagnostic by Story Advantage finds where AI will give
+      your business the most leverage. Please enable JavaScript to take it.
+    </noscript>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
