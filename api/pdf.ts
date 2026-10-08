@@ -18,6 +18,7 @@ declare const process: { env: Record<string, string | undefined> };
 
 interface VReq {
   query: Record<string, string | string[] | undefined>;
+  headers: Record<string, string | string[] | undefined>;
 }
 interface VRes {
   status(code: number): VRes;
@@ -41,7 +42,16 @@ export default async function handler(req: VReq, res: VRes): Promise<void> {
     SUPABASE_SERVICE_ROLE_KEY: process.env.SUPABASE_SERVICE_ROLE_KEY,
     APP_URL: process.env.APP_URL,
   };
-  if (!env.SUPABASE_URL || !env.SUPABASE_SERVICE_ROLE_KEY || !env.APP_URL) {
+  // Storage is the only hard requirement. The page to render defaults to this
+  // deployment's own host when APP_URL isn't set, so the PDF works out of the box.
+  if (!env.SUPABASE_URL || !env.SUPABASE_SERVICE_ROLE_KEY) {
+    res.status(404).json({ error: 'not_configured' });
+    return;
+  }
+  const hostHeader = req.headers['x-forwarded-host'] ?? req.headers.host;
+  const host = Array.isArray(hostHeader) ? hostHeader[0] : hostHeader;
+  const appBase = (env.APP_URL ?? (host ? `https://${host}` : '')).replace(/\/+$/, '');
+  if (!appBase) {
     res.status(404).json({ error: 'not_configured' });
     return;
   }
@@ -72,7 +82,7 @@ export default async function handler(req: VReq, res: VRes): Promise<void> {
       });
   try {
     const page = await browser.newPage();
-    const target = `${env.APP_URL.replace(/\/+$/, '')}/r/${id}`;
+    const target = `${appBase}/r/${id}`;
     await page.goto(target, { waitUntil: 'networkidle0', timeout: 30_000 });
     await page.waitForSelector('.verdict-zone', { timeout: 15_000 });
     // Let the bars settle at full width before capturing.
