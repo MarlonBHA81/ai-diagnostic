@@ -4,8 +4,39 @@
  * public (results are shared by link); the service key stays server-side.
  */
 import type { LeadEnv } from './handleLead';
+import type { DiagnosticCompletedEvent } from '../lib/events';
 
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+export { UUID_RE };
+
+/**
+ * Fetch a stored diagnostic_completed payload from Supabase by id.
+ * Returns null when it is missing, unconfigured, or the lookup fails.
+ * Shared by the results JSON route and the PDF generator.
+ */
+export async function fetchResult(
+  env: LeadEnv,
+  id: string,
+): Promise<DiagnosticCompletedEvent | null> {
+  if (!env.SUPABASE_URL || !env.SUPABASE_SERVICE_ROLE_KEY) return null;
+  const url =
+    `${env.SUPABASE_URL.replace(/\/+$/, '')}/rest/v1/diagnostics` +
+    `?id=eq.${encodeURIComponent(id)}&select=payload&limit=1`;
+  try {
+    const res = await fetch(url, {
+      headers: {
+        apikey: env.SUPABASE_SERVICE_ROLE_KEY,
+        Authorization: `Bearer ${env.SUPABASE_SERVICE_ROLE_KEY}`,
+      },
+    });
+    if (!res.ok) return null;
+    const rows = (await res.json()) as Array<{ payload: unknown }>;
+    return (rows[0]?.payload as DiagnosticCompletedEvent) ?? null;
+  } catch {
+    return null;
+  }
+}
 
 function json(body: unknown, status: number): Response {
   return new Response(JSON.stringify(body), {
