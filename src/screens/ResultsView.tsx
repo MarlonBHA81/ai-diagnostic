@@ -1,7 +1,7 @@
 import { Fragment, useEffect, useState } from 'react';
 import type { IndustryConfig } from '../config/IndustryConfig';
 import type { ResultsModel } from '../results/buildResult';
-import { whyRuns } from '../results/buildResult';
+import { whyRuns, quickWhy, tapLabel } from '../results/buildResult';
 import type { CurrencyCode } from '../currency/currency';
 import { formatMoney, formatMonthlyCost } from '../currency/currency';
 import { fmtHours } from '../lib/num';
@@ -31,9 +31,10 @@ export function ResultsView({
   animate,
   onRetake,
 }: ResultsViewProps) {
+  const quick = model.mode === 'quick';
   const maxC = Math.max(...model.zones.map((z) => z.compressionScore), 1);
   const barsSorted = [...model.zones].sort((a, b) => b.compressionScore - a.compressionScore);
-  const why = whyRuns(model, config, businessName);
+  const why = quick ? null : whyRuns(model, config, businessName);
   const partnerShort = config.dimensions.partnerInvolvementLabel.split(' ')[0];
   const bookingUrl = config.closing.ctaUrl;
 
@@ -77,9 +78,11 @@ export function ResultsView({
         <div className="verdict-eyebrow">Your binding constraint</div>
         <div className="verdict-zone">{model.constraint.name}</div>
         <p className="verdict-why" style={{ marginBottom: 0 }}>
-          {why.map((run, i) => (
-            <Fragment key={i}>{run.b ? <b>{run.t}</b> : run.t}</Fragment>
-          ))}
+          {why
+            ? why.map((run, i) => (
+                <Fragment key={i}>{run.b ? <b>{run.t}</b> : run.t}</Fragment>
+              ))
+            : quickWhy(model, businessName)}
         </p>
         <p className="cost-line" style={{ marginBottom: 0 }}>
           {model.monthlyCost != null ? (
@@ -118,10 +121,11 @@ export function ResultsView({
       )}
 
       {/* Compression bars */}
-      <div className="sec-title">Compression score by zone</div>
+      <div className="sec-title">{quick ? 'Leverage by zone' : 'Compression score by zone'}</div>
       <p className="qblock__hint" style={{ marginBottom: 'var(--sa-space-4)' }}>
-        Compression Score = hours/week × repetitiveness × AI-usage gap. It measures how much of
-        each zone AI could compress that it currently isn't. Higher = more untapped leverage.
+        {quick
+          ? 'A simple leverage score per zone: repetitive, time-heavy work with little AI in use scores highest. Higher = more untapped leverage.'
+          : "Compression Score = hours/week × repetitiveness × AI-usage gap. It measures how much of each zone AI could compress that it currently isn't. Higher = more untapped leverage."}
       </p>
       <div className="bars">
         {barsSorted.map((z) => {
@@ -142,58 +146,87 @@ export function ResultsView({
       {/* Summary table */}
       <div className="sec-title">Summary table</div>
       <div className="table-scroll">
-        <table className="rtable">
-          <thead>
-            <tr>
-              <th>Zone</th>
-              <th>Hrs/wk</th>
-              <th>Repet.</th>
-              <th>AI usage</th>
-              <th>Margin</th>
-              <th>{partnerShort}</th>
-              <th>Score</th>
-            </tr>
-          </thead>
-          <tbody>
-            {model.zones.map((z) => (
-              <tr key={z.zoneId} className={z.zoneId === model.constraint.zoneId ? 'constraint' : ''}>
-                <td>{z.name}</td>
-                <td>{fmtHours(z.hoursPerWeek)}</td>
-                <td>{z.repetitiveness}</td>
-                <td>{z.aiLabel}</td>
-                <td>{z.marginLabel}</td>
-                <td>{z.partnerInvolvement}</td>
-                <td><b>{z.compressionScore}</b></td>
+        {quick ? (
+          <table className="rtable">
+            <thead>
+              <tr>
+                <th>Zone</th>
+                <th>Repetitive</th>
+                <th>Takes time</th>
+                <th>Using AI</th>
+                <th>Score</th>
               </tr>
-            ))}
-            <tr>
-              <td><b>Total</b></td>
-              <td><b>{fmtHours(model.totalHours)}</b></td>
-              <td colSpan={5} />
-            </tr>
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {model.zones.map((z) => (
+                <tr key={z.zoneId} className={z.zoneId === model.constraint.zoneId ? 'constraint' : ''}>
+                  <td>{z.name}</td>
+                  <td>{z.tap ? tapLabel(z.tap.repetitive) : '—'}</td>
+                  <td>{z.tap ? tapLabel(z.tap.time) : '—'}</td>
+                  <td>{z.tap ? tapLabel(z.tap.aiUsage) : '—'}</td>
+                  <td><b>{z.compressionScore}</b></td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        ) : (
+          <table className="rtable">
+            <thead>
+              <tr>
+                <th>Zone</th>
+                <th>Hrs/wk</th>
+                <th>Repet.</th>
+                <th>AI usage</th>
+                <th>Margin</th>
+                <th>{partnerShort}</th>
+                <th>Score</th>
+              </tr>
+            </thead>
+            <tbody>
+              {model.zones.map((z) => (
+                <tr key={z.zoneId} className={z.zoneId === model.constraint.zoneId ? 'constraint' : ''}>
+                  <td>{z.name}</td>
+                  <td>{fmtHours(z.hoursPerWeek)}</td>
+                  <td>{z.repetitiveness}</td>
+                  <td>{z.aiLabel}</td>
+                  <td>{z.marginLabel}</td>
+                  <td>{z.partnerInvolvement}</td>
+                  <td><b>{z.compressionScore}</b></td>
+                </tr>
+              ))}
+              <tr>
+                <td><b>Total</b></td>
+                <td><b>{fmtHours(model.totalHours)}</b></td>
+                <td colSpan={5} />
+              </tr>
+            </tbody>
+          </table>
+        )}
       </div>
 
-      {/* How the constraint was identified */}
-      <div className="sec-title">How the constraint was identified</div>
-      <div className="syn">
-        <SynItem
-          k="Test 1: Heaviest time + repetitiveness"
-          zone={model.testWinners.volume.name}
-          r={`${fmtHours(model.testWinners.volume.hoursPerWeek)} hrs/week × repetitiveness ${model.testWinners.volume.repetitiveness} = ${model.testWinners.volume.timeRep}. This is where AI saves the most raw hours.`}
-        />
-        <SynItem
-          k="Test 2: Highest margin impact, lowest AI usage"
-          zone={model.testWinners.margin.name}
-          r={`${model.testWinners.margin.marginLabel} margin impact with ${model.testWinners.margin.aiLabel} AI usage. Your biggest untapped opportunity.`}
-        />
-        <SynItem
-          k={`Test 3: Highest ${config.dimensions.partnerInvolvementLabel.toLowerCase()}`}
-          zone={model.testWinners.partner.name}
-          r={`${config.dimensions.partnerInvolvementLabel} ${model.testWinners.partner.partnerInvolvement}/5. Solving this frees your scarcest resource: leadership attention.`}
-        />
-      </div>
+      {/* How the constraint was identified (full mode only) */}
+      {!quick && (
+        <>
+          <div className="sec-title">How the constraint was identified</div>
+          <div className="syn">
+            <SynItem
+              k="Test 1: Heaviest time + repetitiveness"
+              zone={model.testWinners.volume.name}
+              r={`${fmtHours(model.testWinners.volume.hoursPerWeek)} hrs/week × repetitiveness ${model.testWinners.volume.repetitiveness} = ${model.testWinners.volume.timeRep}. This is where AI saves the most raw hours.`}
+            />
+            <SynItem
+              k="Test 2: Highest margin impact, lowest AI usage"
+              zone={model.testWinners.margin.name}
+              r={`${model.testWinners.margin.marginLabel} margin impact with ${model.testWinners.margin.aiLabel} AI usage. Your biggest untapped opportunity.`}
+            />
+            <SynItem
+              k={`Test 3: Highest ${config.dimensions.partnerInvolvementLabel.toLowerCase()}`}
+              zone={model.testWinners.partner.name}
+              r={`${config.dimensions.partnerInvolvementLabel} ${model.testWinners.partner.partnerInvolvement}/5. Solving this frees your scarcest resource: leadership attention.`}
+            />
+          </div>
+        </>
+      )}
 
       {/* Next step */}
       <div className="sec-title">Your next step</div>

@@ -88,6 +88,26 @@ export interface NextStepCard {
   firmExample: string;
 }
 
+/**
+ * Quick Mode copy: a stripped-down 3-tap-per-zone questionnaire (Yes / Somewhat
+ * / No / Not sure) for a faster, lower-friction diagnostic. Questions use the
+ * placeholder `{zone}`, replaced with the lowercased zone name at render.
+ */
+export interface QuickConfig {
+  /** Short intro line shown on each quick zone screen. */
+  instruction: string;
+  /** The three per-zone questions, each with a `{zone}` placeholder. */
+  questions: {
+    repetitive: string;
+    time: string;
+    aiUsage: string;
+  };
+  /** Prompt for the single hours-band question about the winning zone. */
+  hoursPrompt: string;
+  /** Labels for the three hours bands (Under 5 / 5 to 15 / 15+). */
+  hoursBands: [string, string, string];
+}
+
 export interface IndustryConfig {
   /** Route slug, e.g. "accounting". */
   slug: string;
@@ -115,6 +135,9 @@ export interface IndustryConfig {
 
   /** Shared dimension labels/scales. */
   dimensions: DimensionConfig;
+
+  /** Quick Mode copy (optional; required only when the active mode is "quick"). */
+  quick?: QuickConfig;
 
   /** The 7 zones, in display order. */
   zones: ZoneConfig[];

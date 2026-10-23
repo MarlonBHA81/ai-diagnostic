@@ -362,6 +362,34 @@ a { color: var(--sa-accent); }
 .opt-col__opt b { font-weight: var(--sa-weight-bold); }
 .opt-col__opt .sub { display: block; font-size: var(--sa-text-xs); color: var(--sa-ink-soft); margin-top: 2px; }
 
+/* Quick Mode taps (Yes / Somewhat / No / Not sure) */
+.tap-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--sa-space-2);
+  margin-top: var(--sa-space-2);
+}
+.tap-col { display: flex; flex-direction: column; gap: var(--sa-space-3); margin-top: var(--sa-space-2); }
+.tap {
+  text-align: center;
+  padding: var(--sa-space-3) var(--sa-space-2);
+  border: 1.5px solid var(--sa-line);
+  background: var(--sa-surface);
+  border-radius: var(--sa-radius-md);
+  font-size: var(--sa-text-sm);
+  font-weight: var(--sa-weight-bold);
+  cursor: pointer;
+  color: var(--sa-ink);
+  transition: border-color 0.15s, background 0.15s, color 0.15s;
+}
+.tap:hover { border-color: var(--sa-ink); }
+.tap--sel { background: var(--sa-navy); border-color: var(--sa-navy); color: #fff; }
+.tap--block { text-align: left; padding: var(--sa-space-4); font-size: var(--sa-text-base); }
+.tap:focus-visible { outline: 3px solid var(--sa-accent-soft); outline-offset: 2px; }
+@media (max-width: 420px) {
+  .tap-row { grid-template-columns: repeat(2, 1fr); }
+}
+
 /* Number input with unit / currency prefix */
 .num-wrap { display: flex; align-items: center; gap: var(--sa-space-3); }
 .num-input { width: 160px; }

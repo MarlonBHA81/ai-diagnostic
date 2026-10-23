@@ -60,6 +60,17 @@ export const genericConfig: IndustryConfig = {
     partnerInvolvementCaps: ['Never', '', 'Shared', '', "I'm the bottleneck"],
   },
 
+  quick: {
+    instruction: 'Three quick taps. Answer for how things actually work today.',
+    questions: {
+      repetitive: 'Is most of the {zone} work repetitive or rule-based?',
+      time: 'Does {zone} eat a lot of your team’s time each week?',
+      aiUsage: 'Are you already using AI for {zone} in a real way?',
+    },
+    hoursPrompt: 'Roughly how many hours a week does your team spend on {zone}?',
+    hoursBands: ['Under 5 hours', '5 to 15 hours', '15+ hours'],
+  },
+
   zones: [
     {
       id: 'lead',

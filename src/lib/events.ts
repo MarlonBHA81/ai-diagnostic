@@ -23,6 +23,17 @@ export interface LeadCapturedEvent {
   antiSpam?: { honeypot: string; startedAt: number };
 }
 
+/** The four answers on the Quick Mode tap scale. */
+export type TapValue = 'yes' | 'somewhat' | 'no' | 'notsure';
+
+/** A zone's three Quick Mode taps, carried through so the shared page and email
+ *  can render the simple answers without reverse-mapping numeric proxies. */
+export interface QuickTaps {
+  repetitive: TapValue;
+  time: TapValue;
+  aiUsage: TapValue;
+}
+
 export interface ZoneResult {
   zone: string;
   hoursPerWeek: number;
@@ -33,12 +44,16 @@ export interface ZoneResult {
   compressionScore: number;
   bottleneck: string;
   desiredFix: string;
+  /** Present only for Quick Mode diagnostics: the three raw taps for this zone. */
+  quick?: QuickTaps;
 }
 
 export interface DiagnosticCompletedEvent {
   event: 'diagnostic_completed';
   completedAt: string; // ISO-8601
   source: string;
+  /** Which questionnaire produced this: the full 5-dimension quiz, or Quick Mode. */
+  mode?: 'full' | 'quick';
   lead: LeadBlock;
   baseline: {
     currency: CurrencyCode;

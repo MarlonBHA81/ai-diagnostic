@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useQuiz } from '../state/QuizContext';
-import { computeResults } from '../results/buildResult';
+import { activeMode } from '../config/active';
+import { computeResults, computeQuickResults } from '../results/buildResult';
 import { track } from '../lib/analytics';
 import { sendDiagnosticCompleted } from '../lib/leadClient';
 import type { DiagnosticCompletedEvent, ZoneResult } from '../lib/events';
@@ -8,7 +9,14 @@ import { ResultsView } from './ResultsView';
 
 export function Results() {
   const { config, state, restart } = useQuiz();
-  const model = useMemo(() => computeResults(config, state), [config, state]);
+  const quick = activeMode === 'quick';
+  const model = useMemo(
+    () =>
+      quick
+        ? computeQuickResults(config, state.quick, state.quickHours, state.baseline.chargeOutRate)
+        : computeResults(config, state),
+    [quick, config, state],
+  );
   const currency = state.baseline.currency;
   const lead = state.lead;
   const sentRef = useRef(false);
@@ -30,12 +38,14 @@ export function Results() {
       compressionScore: z.compressionScore,
       bottleneck: z.bottleneck,
       desiredFix: z.desiredFix,
+      ...(z.tap ? { quick: z.tap } : {}),
     }));
 
     const event: DiagnosticCompletedEvent = {
       event: 'diagnostic_completed',
       completedAt: new Date().toISOString(),
       source: config.sourceTag,
+      mode: quick ? 'quick' : 'full',
       lead: {
         firstName: lead?.firstName ?? '',
         lastName: lead?.lastName ?? '',
@@ -56,7 +66,7 @@ export function Results() {
       antiSpam: { honeypot: state.honeypot, startedAt: state.startedAt ?? 0 },
     };
     void sendDiagnosticCompleted(event);
-  }, [config, state, model, lead, currency]);
+  }, [quick, config, state, model, lead, currency]);
 
   // Kick the bar animation after mount.
   useEffect(() => {

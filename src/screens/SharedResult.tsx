@@ -3,7 +3,7 @@ import { Shell } from '../components/Shell';
 import { ProgressRail } from '../components/ProgressRail';
 import { ResultsView } from './ResultsView';
 import { activeConfig } from '../config/active';
-import { computeResults, stateFromCompletedEvent } from '../results/buildResult';
+import { modelFromCompletedEvent } from '../results/buildResult';
 import type { DiagnosticCompletedEvent } from '../lib/events';
 
 type LoadState =
@@ -40,7 +40,7 @@ export function SharedResult({ id }: { id: string }) {
   const config = activeConfig;
   const model = useMemo(() => {
     if (load.status !== 'ready') return null;
-    return computeResults(config, stateFromCompletedEvent(load.event, config));
+    return modelFromCompletedEvent(load.event, config);
   }, [load, config]);
 
   return (

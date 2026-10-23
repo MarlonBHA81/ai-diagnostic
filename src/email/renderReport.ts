@@ -1,6 +1,6 @@
 import type { IndustryConfig } from '../config/IndustryConfig';
 import type { DiagnosticCompletedEvent } from '../lib/events';
-import { computeResults, whyRuns, stateFromCompletedEvent } from '../results/buildResult';
+import { whyRuns, quickWhy, tapLabel, modelFromCompletedEvent } from '../results/buildResult';
 import { formatMonthlyCost } from '../currency/currency';
 import { fmtHours } from '../lib/num';
 import { escapeHtml } from '../lib/html';
@@ -23,20 +23,24 @@ export function renderReport(
   event: DiagnosticCompletedEvent,
   config: IndustryConfig,
 ): RenderedReport {
-  const state = stateFromCompletedEvent(event, config);
-  const model = computeResults(config, state);
-  const currency = state.baseline.currency;
+  const model = modelFromCompletedEvent(event, config);
+  const quick = model.mode === 'quick';
+  const currency = event.baseline.currency;
   const firstName = event.lead.firstName || 'there';
   const businessName = event.lead.businessName;
 
   const subject = `${firstName}, your binding constraint is ${model.constraint.name}`;
 
-  const whyText = whyRuns(model, config, businessName)
-    .map((r) => r.t)
-    .join('');
-  const whyHtml = whyRuns(model, config, businessName)
-    .map((r) => (r.b ? `<b>${escapeHtml(r.t)}</b>` : escapeHtml(r.t)))
-    .join('');
+  const whyText = quick
+    ? quickWhy(model, businessName)
+    : whyRuns(model, config, businessName)
+        .map((r) => r.t)
+        .join('');
+  const whyHtml = quick
+    ? escapeHtml(quickWhy(model, businessName))
+    : whyRuns(model, config, businessName)
+        .map((r) => (r.b ? `<b>${escapeHtml(r.t)}</b>` : escapeHtml(r.t)))
+        .join('');
 
   const costHtml =
     model.monthlyCost != null
@@ -49,21 +53,38 @@ export function renderReport(
       ? `Rough monthly cost of this zone: ${formatMonthlyCost(model.monthlyCost, currency)}`
       : '';
 
-  // Summary table rows.
+  // Summary table header + rows (fewer columns in Quick Mode).
+  const th = (label: string) =>
+    `<th style="text-align:left;padding:8px;border-bottom:2px solid ${NAVY};font-size:11px;text-transform:uppercase;color:${INK_SOFT}">${label}</th>`;
+  const headerHtml = quick
+    ? [th('Zone'), th('Repetitive'), th('Takes time'), th('Using AI'), th('Score')].join('')
+    : [th('Zone'), th('Hrs'), th('Rep'), th('AI'), th('Margin'), th('Partner'), th('Score')].join('');
+
   const rowsHtml = model.zones
     .map((z) => {
       const isC = z.zoneId === model.constraint.zoneId;
       const bg = isC ? ` background:${YELLOW_SOFT};` : '';
       const nameCell = isC ? `<b style="color:${NAVY}">${escapeHtml(z.name)}</b>` : escapeHtml(z.name);
-      return `<tr>
-        <td style="padding:8px;border-bottom:1px solid ${LINE};${bg}">${nameCell}</td>
-        <td style="padding:8px;border-bottom:1px solid ${LINE};${bg}">${fmtHours(z.hoursPerWeek)}</td>
-        <td style="padding:8px;border-bottom:1px solid ${LINE};${bg}">${z.repetitiveness}</td>
-        <td style="padding:8px;border-bottom:1px solid ${LINE};${bg}">${escapeHtml(z.aiLabel)}</td>
-        <td style="padding:8px;border-bottom:1px solid ${LINE};${bg}">${escapeHtml(z.marginLabel)}</td>
-        <td style="padding:8px;border-bottom:1px solid ${LINE};${bg}">${z.partnerInvolvement}</td>
-        <td style="padding:8px;border-bottom:1px solid ${LINE};${bg}"><b>${z.compressionScore}</b></td>
-      </tr>`;
+      const td = (inner: string) =>
+        `<td style="padding:8px;border-bottom:1px solid ${LINE};${bg}">${inner}</td>`;
+      const cells = quick
+        ? [
+            td(nameCell),
+            td(z.tap ? escapeHtml(tapLabel(z.tap.repetitive)) : '—'),
+            td(z.tap ? escapeHtml(tapLabel(z.tap.time)) : '—'),
+            td(z.tap ? escapeHtml(tapLabel(z.tap.aiUsage)) : '—'),
+            td(`<b>${z.compressionScore}</b>`),
+          ]
+        : [
+            td(nameCell),
+            td(String(fmtHours(z.hoursPerWeek))),
+            td(String(z.repetitiveness)),
+            td(escapeHtml(z.aiLabel)),
+            td(escapeHtml(z.marginLabel)),
+            td(String(z.partnerInvolvement)),
+            td(`<b>${z.compressionScore}</b>`),
+          ];
+      return `<tr>${cells.join('')}</tr>`;
     })
     .join('');
 
@@ -115,15 +136,7 @@ export function renderReport(
 
     <h3 style="color:${NAVY};margin:28px 0 10px;font-size:14px;text-transform:uppercase;letter-spacing:0.08em">Summary</h3>
     <table style="width:100%;border-collapse:collapse;font-size:13px">
-      <thead><tr>
-        <th style="text-align:left;padding:8px;border-bottom:2px solid ${NAVY};font-size:11px;text-transform:uppercase;color:${INK_SOFT}">Zone</th>
-        <th style="text-align:left;padding:8px;border-bottom:2px solid ${NAVY};font-size:11px;text-transform:uppercase;color:${INK_SOFT}">Hrs</th>
-        <th style="text-align:left;padding:8px;border-bottom:2px solid ${NAVY};font-size:11px;text-transform:uppercase;color:${INK_SOFT}">Rep</th>
-        <th style="text-align:left;padding:8px;border-bottom:2px solid ${NAVY};font-size:11px;text-transform:uppercase;color:${INK_SOFT}">AI</th>
-        <th style="text-align:left;padding:8px;border-bottom:2px solid ${NAVY};font-size:11px;text-transform:uppercase;color:${INK_SOFT}">Margin</th>
-        <th style="text-align:left;padding:8px;border-bottom:2px solid ${NAVY};font-size:11px;text-transform:uppercase;color:${INK_SOFT}">Partner</th>
-        <th style="text-align:left;padding:8px;border-bottom:2px solid ${NAVY};font-size:11px;text-transform:uppercase;color:${INK_SOFT}">Score</th>
-      </tr></thead>
+      <thead><tr>${headerHtml}</tr></thead>
       <tbody>${rowsHtml}</tbody>
     </table>
 
@@ -159,12 +172,16 @@ export function renderReport(
     event.resultUrl ? `View your full results online: ${event.resultUrl}` : '',
     '',
     'Summary:',
-    ...model.zones.map(
-      (z) =>
-        `  ${z.zoneId === model.constraint.zoneId ? '* ' : '  '}${z.name}: ${fmtHours(
-          z.hoursPerWeek,
-        )} hrs, rep ${z.repetitiveness}, AI ${z.aiLabel}, margin ${z.marginLabel}, partner ${z.partnerInvolvement}/5, score ${z.compressionScore}`,
-    ),
+    ...model.zones.map((z) => {
+      const mark = z.zoneId === model.constraint.zoneId ? '* ' : '  ';
+      if (quick) {
+        const t = z.tap;
+        return `  ${mark}${z.name}: repetitive ${t ? tapLabel(t.repetitive) : '—'}, takes time ${
+          t ? tapLabel(t.time) : '—'
+        }, using AI ${t ? tapLabel(t.aiUsage) : '—'}, score ${z.compressionScore}`;
+      }
+      return `  ${mark}${z.name}: ${fmtHours(z.hoursPerWeek)} hrs, rep ${z.repetitiveness}, AI ${z.aiLabel}, margin ${z.marginLabel}, partner ${z.partnerInvolvement}/5, score ${z.compressionScore}`;
+    }),
     '',
     `Your next step: ${model.nextStep.heading}`,
     model.nextStep.body,

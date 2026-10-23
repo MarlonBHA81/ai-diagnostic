@@ -9,8 +9,10 @@ import { DEFAULT_CURRENCY } from '../currency/currency';
 import type { IndustryConfig } from '../config/IndustryConfig';
 import {
   emptyAnswer,
+  emptyQuick,
   type Baseline,
   type LeadDetails,
+  type QuickZoneAnswer,
   type QuizState,
   type Step,
   type ZoneAnswerState,
@@ -21,12 +23,18 @@ type Action =
   | { type: 'SET_LEAD'; lead: LeadDetails; honeypot: string }
   | { type: 'SET_BASELINE'; patch: Partial<Baseline> }
   | { type: 'SET_ANSWER'; zoneId: string; patch: Partial<ZoneAnswerState> }
+  | { type: 'SET_QUICK'; zoneId: string; patch: Partial<QuickZoneAnswer> }
+  | { type: 'SET_QUICK_HOURS'; hours: number }
   | { type: 'GO'; step: Step }
   | { type: 'RESTART' };
 
 function initialState(config: IndustryConfig): QuizState {
   const answers: Record<string, ZoneAnswerState> = {};
-  for (const z of config.zones) answers[z.id] = emptyAnswer();
+  const quick: Record<string, QuickZoneAnswer> = {};
+  for (const z of config.zones) {
+    answers[z.id] = emptyAnswer();
+    quick[z.id] = emptyQuick();
+  }
   return {
     step: 'welcome',
     lead: null,
@@ -37,6 +45,8 @@ function initialState(config: IndustryConfig): QuizState {
       chargeOutRate: null,
     },
     answers,
+    quick,
+    quickHours: null,
     startedAt: null,
     honeypot: '',
   };
@@ -59,6 +69,16 @@ function reducer(state: QuizState, action: Action): QuizState {
           [action.zoneId]: { ...state.answers[action.zoneId], ...action.patch },
         },
       };
+    case 'SET_QUICK':
+      return {
+        ...state,
+        quick: {
+          ...state.quick,
+          [action.zoneId]: { ...state.quick[action.zoneId], ...action.patch },
+        },
+      };
+    case 'SET_QUICK_HOURS':
+      return { ...state, quickHours: action.hours };
     case 'GO':
       return { ...state, step: action.step };
     case 'RESTART':
@@ -80,6 +100,8 @@ interface QuizContextValue {
   setLead: (lead: LeadDetails, honeypot: string) => void;
   setBaseline: (patch: Partial<Baseline>) => void;
   setAnswer: (zoneId: string, patch: Partial<ZoneAnswerState>) => void;
+  setQuick: (zoneId: string, patch: Partial<QuickZoneAnswer>) => void;
+  setQuickHours: (hours: number) => void;
   go: (step: Step) => void;
   restart: () => void;
 }
@@ -104,6 +126,8 @@ export function QuizProvider({
       setLead: (lead, honeypot) => dispatch({ type: 'SET_LEAD', lead, honeypot }),
       setBaseline: (patch) => dispatch({ type: 'SET_BASELINE', patch }),
       setAnswer: (zoneId, patch) => dispatch({ type: 'SET_ANSWER', zoneId, patch }),
+      setQuick: (zoneId, patch) => dispatch({ type: 'SET_QUICK', zoneId, patch }),
+      setQuickHours: (hours) => dispatch({ type: 'SET_QUICK_HOURS', hours }),
       go: (step) => dispatch({ type: 'GO', step }),
       restart: () => dispatch({ type: 'RESTART' }),
     }),
