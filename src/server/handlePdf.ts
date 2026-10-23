@@ -1,56 +1,56 @@
 /**
- * GET /api/pdf?id=<uuid>
+ * Core logic for GET /api/pdf?id=<uuid>.
  *
- * Returns the hosted PDF report. Lazy + cached: if the PDF already exists in
- * Supabase Storage it redirects straight to it; otherwise it fetches the stored
- * diagnostic, renders a branded PDF with pdf-lib (no headless browser), uploads
- * it to the public `reports` bucket, and redirects to the file.
+ * Lazy + cached: if the PDF already exists in Supabase Storage it points
+ * straight at it; otherwise it fetches the stored diagnostic, renders a branded
+ * PDF with pdf-lib (no headless browser), uploads it to the public `reports`
+ * bucket, and points at the file.
  *
- * Framework-agnostic: takes a Web Request and returns a Web Response, so the
- * Vercel adapter (api/pdf.ts) is a thin wrapper.
+ * Framework-neutral: takes a plain id + env and returns a plain result, so the
+ * platform adapter (api/pdf.ts) stays tiny and uses no Web/Node-specific globals
+ * beyond fetch.
  */
 import type { LeadEnv } from './handleLead';
-import { fetchResult, UUID_RE } from './handleResult';
+import { fetchResult } from './handleResult';
 import { reportExists, reportPublicUrl, uploadReport } from './pdfStorage';
 import { buildReportPdf } from './pdfDoc';
 import { activeConfig } from '../config/active';
 
-function json(body: unknown, status: number): Response {
-  return new Response(JSON.stringify(body), {
-    status,
-    headers: { 'content-type': 'application/json' },
-  });
+const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+export interface PdfResult {
+  /** A 302 redirect target when the PDF is ready. */
+  location?: string;
+  /** HTTP status for an error response (ignored when `location` is set). */
+  status: number;
+  /** JSON error body. */
+  error?: string;
 }
 
-export async function handlePdf(request: Request, env: LeadEnv): Promise<Response> {
-  if (request.method !== 'GET') return json({ error: 'method_not_allowed' }, 405);
-
-  const id = new URL(request.url).searchParams.get('id') ?? '';
-  if (!UUID_RE.test(id)) return json({ error: 'bad_id' }, 400);
+export async function handlePdf(id: string, env: LeadEnv): Promise<PdfResult> {
+  if (!UUID_RE.test(id)) return { status: 400, error: 'bad_id' };
 
   if (!env.SUPABASE_URL || !env.SUPABASE_SERVICE_ROLE_KEY) {
-    return json({ error: 'not_configured' }, 404);
+    return { status: 404, error: 'not_configured' };
   }
 
   const publicUrl = reportPublicUrl(env, id);
 
   // Serve the cached file if it already exists.
-  if (await reportExists(env, id)) {
-    return Response.redirect(publicUrl, 302);
-  }
+  if (await reportExists(env, id)) return { status: 302, location: publicUrl };
 
   const event = await fetchResult(env, id);
-  if (!event) return json({ error: 'not_found' }, 404);
+  if (!event) return { status: 404, error: 'not_found' };
 
   let bytes: Uint8Array;
   try {
     bytes = await buildReportPdf(event, activeConfig);
   } catch {
-    return json({ error: 'render_failed' }, 500);
+    return { status: 500, error: 'render_failed' };
   }
 
   const ok = await uploadReport(env, id, bytes);
-  if (!ok) return json({ error: 'upload_failed' }, 502);
+  if (!ok) return { status: 502, error: 'upload_failed' };
 
-  return Response.redirect(publicUrl, 302);
+  return { status: 302, location: publicUrl };
 }
