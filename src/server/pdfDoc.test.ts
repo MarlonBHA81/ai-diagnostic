@@ -1,5 +1,4 @@
 import { describe, it, expect } from 'vitest';
-import { writeFileSync } from 'node:fs';
 import { buildReportPdf } from './pdfDoc';
 import { genericConfig } from '../config/industries/generic';
 import type { DiagnosticCompletedEvent } from '../lib/events';
@@ -41,7 +40,6 @@ describe('buildReportPdf', () => {
     expect(bytes.length).toBeGreaterThan(1500);
     // PDF magic header "%PDF".
     expect([bytes[0], bytes[1], bytes[2], bytes[3]]).toEqual([0x25, 0x50, 0x44, 0x46]);
-    if (process.env.PDF_OUT) writeFileSync(process.env.PDF_OUT, bytes);
   });
 
   it('produces a valid PDF for the full mode too', async () => {
